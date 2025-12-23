@@ -1,0 +1,15 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjEyMzQ1LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4...",
+    "payload": "eyJkb21haW4iOiJiYXNlcnVzaC5hcHAifQ==",
+    "signature": "MHg..."
+  },
+  "frame": {
+    "version": "next",
+    "name": "BaseRush Arena",
+    "iconUrl": "https://your-domain.com/icon.png",
+    "splashImageUrl": "https://your-domain.com/splash.png",
+    "splashBackgroundColor": "#667eea",
+    "homeUrl": "https://your-domain.com"
+  }
+}

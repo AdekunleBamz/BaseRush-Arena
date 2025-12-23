@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#grad2)"/>
+  <text x="540" y="800" font-family="Arial, sans-serif" font-size="200" font-weight="bold" text-anchor="middle" fill="#ffffff">⚡</text>
+  <text x="540" y="1000" font-family="Arial, sans-serif" font-size="100" font-weight="bold" text-anchor="middle" fill="#ffffff">BaseRush</text>
+  <text x="540" y="1100" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="#ffffff">Arena</text>
+  <text x="540" y="1200" font-family="Arial, sans-serif" font-size="40" text-anchor="middle" fill="#ffffff" opacity="0.8">Compete • Stake • Earn</text>
+</svg>
