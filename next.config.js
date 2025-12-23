@@ -1,17 +1,25 @@
 const path = require('path');
+const webpack = require('webpack');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config, { webpack }) => {
+  webpack: (config) => {
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
     
-    // Fix for porto/internal module not found error
-    // Point to a stub module
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'porto/internal': path.resolve(__dirname, 'src/lib/porto-stub.js'),
-    };
+    // Fix for porto and porto/internal module resolution
+    // Replace these imports with stub module
+    const stubPath = path.resolve(__dirname, 'src/lib/porto-stub.js');
+    
+    config.plugins.push(
+      // Replace porto/internal imports with stub
+      new webpack.NormalModuleReplacementPlugin(
+        /^porto\/internal$/,
+        (resource) => {
+          resource.request = stubPath;
+        }
+      )
+    );
     
     return config;
   },
