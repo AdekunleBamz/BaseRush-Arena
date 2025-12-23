@@ -18,6 +18,13 @@ const nextConfig = {
         (resource) => {
           resource.request = stubPath;
         }
+      ),
+      // Replace direct porto imports with stub
+      new webpack.NormalModuleReplacementPlugin(
+        /^porto$/,
+        (resource) => {
+          resource.request = stubPath;
+        }
       )
     );
     
