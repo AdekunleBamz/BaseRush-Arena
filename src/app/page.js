@@ -9,7 +9,7 @@ import { CONTRACTS, GAME_POOL_ABI, REWARD_VAULT_ABI, ACHIEVEMENT_NFT_ABI, BADGE_
 export default function Home() {
   const { open } = useAppKit()
   const { address, isConnected } = useAccount()
-  const { writeContract, data: hash } = useWriteContract()
+  const { writeContract, data: hash, error: writeError, isPending } = useWriteContract()
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
   
   const [selectedOption, setSelectedOption] = useState(0)
@@ -62,59 +62,104 @@ export default function Home() {
     }
   }, [isConfirmed])
 
+  const handleTransaction = (txFn) => {
+    if (!isConnected) {
+      open()
+      return
+    }
+    
+    if (isPending) {
+      return // Already processing
+    }
+    
+    try {
+      txFn()
+    } catch (error) {
+      console.error('Transaction error:', error)
+      // If user rejected, don't show error
+      if (error?.message?.includes('User rejected') || error?.code === 4001) {
+        return
+      }
+      alert(`Transaction failed: ${error?.message || 'Unknown error'}`)
+    }
+  }
+
+  // Show write errors
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError)
+      // Don't show alert for user rejection
+      if (!writeError.message?.includes('User rejected') && writeError.code !== 4001) {
+        alert(`Transaction failed: ${writeError.message || 'Unknown error'}`)
+      }
+    }
+  }, [writeError])
+
   const enterGame = () => {
-    writeContract({
-      address: CONTRACTS.GAME_POOL,
-      abi: GAME_POOL_ABI,
-      functionName: 'enterGame',
-      args: [selectedOption, '0x0000000000000000000000000000000000000000'],
-      value: parseEther('0.0001'),
-    })
+    handleTransaction(() => 
+      writeContract({
+        address: CONTRACTS.GAME_POOL,
+        abi: GAME_POOL_ABI,
+        functionName: 'enterGame',
+        args: [selectedOption, '0x0000000000000000000000000000000000000000'],
+        value: parseEther('0.0001'),
+      })
+    )
   }
 
   const multiEntry = () => {
-    writeContract({
-      address: CONTRACTS.GAME_POOL,
-      abi: GAME_POOL_ABI,
-      functionName: 'multiEntry',
-      args: [selectedOption, multiCount, '0x0000000000000000000000000000000000000000'],
-      value: parseEther((0.0001 * multiCount).toString()),
-    })
+    handleTransaction(() =>
+      writeContract({
+        address: CONTRACTS.GAME_POOL,
+        abi: GAME_POOL_ABI,
+        functionName: 'multiEntry',
+        args: [selectedOption, multiCount, '0x0000000000000000000000000000000000000000'],
+        value: parseEther((0.0001 * multiCount).toString()),
+      })
+    )
   }
 
   const stakeTokens = () => {
-    writeContract({
-      address: CONTRACTS.REWARD_VAULT,
-      abi: REWARD_VAULT_ABI,
-      functionName: 'stake',
-      args: ['0x0000000000000000000000000000000000000000'],
-      value: parseEther(stakeAmount),
-    })
+    handleTransaction(() =>
+      writeContract({
+        address: CONTRACTS.REWARD_VAULT,
+        abi: REWARD_VAULT_ABI,
+        functionName: 'stake',
+        args: ['0x0000000000000000000000000000000000000000'],
+        value: parseEther(stakeAmount),
+      })
+    )
   }
 
   const claimRewards = () => {
-    writeContract({
-      address: CONTRACTS.REWARD_VAULT,
-      abi: REWARD_VAULT_ABI,
-      functionName: 'claimRewards',
-    })
+    handleTransaction(() =>
+      writeContract({
+        address: CONTRACTS.REWARD_VAULT,
+        abi: REWARD_VAULT_ABI,
+        functionName: 'claimRewards',
+      })
+    )
   }
 
   const compoundRewards = () => {
-    writeContract({
-      address: CONTRACTS.REWARD_VAULT,
-      abi: REWARD_VAULT_ABI,
-      functionName: 'compoundRewards',
-    })
+    handleTransaction(() =>
+      writeContract({
+        address: CONTRACTS.REWARD_VAULT,
+        abi: REWARD_VAULT_ABI,
+        functionName: 'compoundRewards',
+      })
+    )
   }
 
   const claimBadge = (badgeType) => {
-    writeContract({
-      address: CONTRACTS.ACHIEVEMENT_NFT,
-      abi: ACHIEVEMENT_NFT_ABI,
-      functionName: 'claimBadge',
-      args: [badgeType],
-    })
+    handleTransaction(() =>
+      writeContract({
+        address: CONTRACTS.ACHIEVEMENT_NFT,
+        abi: ACHIEVEMENT_NFT_ABI,
+        functionName: 'claimBadge',
+        args: [badgeType],
+      })
+    )
   }
 
   if (!isConnected) {
@@ -247,9 +292,9 @@ export default function Home() {
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px'}}
                 onClick={multiCount === 1 ? enterGame : multiEntry}
-                disabled={isConfirming}
+                disabled={isConfirming || isPending}
               >
-                {isConfirming ? 'Confirming...' : `Enter (${(0.0001 * multiCount).toFixed(4)} ETH)`}
+                {isPending ? 'Requesting...' : isConfirming ? 'Confirming...' : `Enter (${(0.0001 * multiCount).toFixed(4)} ETH)`}
               </button>
             </div>
           </div>
@@ -287,17 +332,17 @@ export default function Home() {
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px'}}
                 onClick={stakeTokens}
-                disabled={isConfirming}
+                disabled={isConfirming || isPending}
               >
-                {isConfirming ? 'Confirming...' : 'Stake'}
+                {isPending ? 'Requesting...' : isConfirming ? 'Confirming...' : 'Stake'}
               </button>
 
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px'}}>
-                <button className="btn" onClick={claimRewards} disabled={isConfirming}>
-                  Claim Rewards
+                <button className="btn" onClick={claimRewards} disabled={isConfirming || isPending}>
+                  {isPending ? 'Requesting...' : 'Claim Rewards'}
                 </button>
-                <button className="btn" onClick={compoundRewards} disabled={isConfirming}>
-                  Compound
+                <button className="btn" onClick={compoundRewards} disabled={isConfirming || isPending}>
+                  {isPending ? 'Requesting...' : 'Compound'}
                 </button>
               </div>
             </div>
@@ -316,8 +361,8 @@ export default function Home() {
               {Object.entries(BADGE_TYPES).map(([name, id]) => (
                 <div key={id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px'}}>
                   <span>{name.replace(/_/g, ' ')}</span>
-                  <button className="btn" onClick={() => claimBadge(id)} disabled={isConfirming}>
-                    Claim
+                  <button className="btn" onClick={() => claimBadge(id)} disabled={isConfirming || isPending}>
+                    {isPending ? 'Requesting...' : 'Claim'}
                   </button>
                 </div>
               ))}

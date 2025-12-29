@@ -7,6 +7,12 @@ const nextConfig = {
   webpack: (config) => {
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
     
+    // Fix for React Native modules used by MetaMask SDK
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      '@react-native-async-storage/async-storage': false,
+    };
+    
     // Fix for porto and porto/internal module resolution
     // Replace these imports with stub module
     const stubPath = path.resolve(__dirname, 'src/lib/porto-stub.js');
