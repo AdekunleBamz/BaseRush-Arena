@@ -3,6 +3,7 @@
 import { Web3Provider } from '../lib/web3'
 import { ThemeProvider } from '../lib/theme-context'
 import { SoundProvider } from '../lib/sound-context'
+import ErrorBoundary from '../components/ErrorBoundary'
 import './globals.css'
 
 // Metadata for SEO and social sharing
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
         <Web3Provider>
           <ThemeProvider>
             <SoundProvider>
-              {children}
+              <ErrorBoundary>
+                {children}
+              </ErrorBoundary>
             </SoundProvider>
           </ThemeProvider>
         </Web3Provider>
