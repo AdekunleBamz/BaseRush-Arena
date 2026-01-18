@@ -1,3 +1,5 @@
+// Chat Component
+// Real-time chat interface for players to communicate during games.
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
@@ -13,6 +15,7 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState('')
   const messagesEndRef = useRef(null)
 
+  // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -21,6 +24,7 @@ export default function Chat() {
     scrollToBottom()
   }, [messages])
 
+  // Send a new message
   const sendMessage = () => {
     if (!newMessage.trim() || !isConnected) return
 
@@ -35,12 +39,14 @@ export default function Chat() {
     setNewMessage('')
   }
 
+  // Handle Enter key press for sending messages
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       sendMessage()
     }
   }
 
+  // Format timestamp for display
   const formatTime = (timestamp) => {
     const date = new Date(timestamp)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
