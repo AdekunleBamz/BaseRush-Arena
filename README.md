@@ -46,7 +46,57 @@ All on **Base Mainnet**.
 - 10 achievement NFTs
 - Free minting (gas only)
 
-## 🚀 Deploy to Vercel
+### Leaderboard Tab
+- View top players by entries and wins
+- Sortable columns (entries, wins, win rate)
+- Manual refresh functionality
+
+### Chat Tab
+- Real-time chat with other players
+- Auto-scroll to latest messages
+- Enter key support for sending
+
+### Notifications Tab
+- Filter by notification type (win, prize, entry, stake)
+- Clear all notifications
+- Timestamp display
+
+### Additional Features
+- Dark/Light theme toggle
+- Sound effects toggle
+- Responsive design
+- Transaction status feedback
+
+## �️ Development
+
+### Project Structure
+```
+src/
+├── app/
+│   ├── globals.css          # Global styles with themes
+│   ├── layout.js            # Root layout with providers
+│   └── page.js              # Main game page
+├── components/
+│   ├── Chat.js              # Real-time chat component
+│   ├── Leaderboard.js       # Sortable leaderboard
+│   ├── Loading.js           # Loading spinner with animations
+│   ├── Notifications.js     # Filterable notifications
+│   └── ErrorMessage.js      # Error display component
+└── lib/
+    ├── contracts.js         # Contract ABIs and addresses
+    ├── sound-context.js     # Sound effects provider
+    ├── theme-context.js     # Theme provider
+    └── web3.js              # Web3 configuration
+```
+
+### Key Technologies
+- **Next.js 14** - React framework
+- **Wagmi** - Ethereum interactions
+- **Reown AppKit** - Wallet connection
+- **Base Network** - L2 blockchain
+- **Tailwind-like CSS** - Custom styling
+
+## �🚀 Deploy to Vercel
 
 ```bash
 npm i -g vercel
