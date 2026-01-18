@@ -1,28 +1,34 @@
+
+// Theme Context
+// Provides dark/light theme state and toggling for the app using React context.
 'use client'
 
+
+// React context and hooks
 import { createContext, useContext, useEffect, useState } from 'react'
 
+
+// Create theme context
 const ThemeContext = createContext()
 
+
+// ThemeProvider component to wrap app and provide theme state
 export function ThemeProvider({ children }) {
   const [isDark, setIsDark] = useState(false)
 
+  // Load theme preference from localStorage
   useEffect(() => {
-    // Load theme preference from localStorage
     const savedTheme = localStorage.getItem('baserush-theme')
     if (savedTheme) {
       setIsDark(savedTheme === 'dark')
     } else {
-      // Default to light theme
       setIsDark(false)
     }
   }, [])
 
+  // Save theme preference and apply to document
   useEffect(() => {
-    // Save theme preference
     localStorage.setItem('baserush-theme', isDark ? 'dark' : 'light')
-
-    // Apply theme to document
     if (isDark) {
       document.documentElement.classList.add('dark-theme')
     } else {
@@ -30,6 +36,7 @@ export function ThemeProvider({ children }) {
     }
   }, [isDark])
 
+  // Toggle theme
   const toggleTheme = () => {
     setIsDark(prev => !prev)
   }
@@ -41,6 +48,8 @@ export function ThemeProvider({ children }) {
   )
 }
 
+
+// Custom hook to use theme context
 export function useTheme() {
   const context = useContext(ThemeContext)
   if (!context) {
