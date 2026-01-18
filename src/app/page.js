@@ -121,6 +121,10 @@ export default function Home() {
     }
   }, [writeError])
 
+
+  /**
+   * Enter the game with selected option
+   */
   const enterGame = () => {
     handleTransaction(() => 
       writeContract({
@@ -133,6 +137,10 @@ export default function Home() {
     )
   }
 
+
+  /**
+   * Enter multiple times in the game
+   */
   const multiEntry = () => {
     handleTransaction(() =>
       writeContract({
@@ -145,6 +153,10 @@ export default function Home() {
     )
   }
 
+
+  /**
+   * Stake tokens in the reward vault
+   */
   const stakeTokens = () => {
     handleTransaction(() =>
       writeContract({
@@ -157,6 +169,10 @@ export default function Home() {
     )
   }
 
+
+  /**
+   * Claim earned rewards from the vault
+   */
   const claimRewards = () => {
     handleTransaction(() =>
       writeContract({
@@ -167,6 +183,10 @@ export default function Home() {
     )
   }
 
+
+  /**
+   * Compound earned rewards in the vault
+   */
   const compoundRewards = () => {
     handleTransaction(() =>
       writeContract({
