@@ -5,6 +5,29 @@ All notable changes to BaseRush Arena will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-01-19
+
+### Added
+- **Accessibility Improvements**: Full keyboard navigation, ARIA labels, screen reader support, high contrast mode, reduced motion preferences
+- **Performance Optimizations**: Memoized calculations, loading states for all contract reads, useCallback for transaction functions
+- **Gamification System**: Achievement unlocks, streak tracking, achievement notifications with animations
+- **Data Visualization**: Performance chart with SVG-based bar chart showing win/loss history and statistics
+- **Settings Panel**: Comprehensive user preferences with localStorage persistence, theme/sound toggles, accessibility options
+- **Help & Tutorial System**: In-app help modal with step-by-step instructions, troubleshooting guide, keyboard shortcuts reference
+- **Enhanced Error Handling**: Specific error messages for different failure types, user-friendly error banners with close buttons
+- **UI/UX Enhancements**: Improved animations, better loading indicators, enhanced tooltips, responsive design improvements
+
+### Changed
+- **README.md**: Complete rewrite with comprehensive feature documentation, development setup, and project structure
+- **Code Quality**: Added extensive comments, improved component organization, better state management
+- **User Experience**: Streamlined navigation, better visual feedback, improved information architecture
+
+### Technical Improvements
+- **React Performance**: Implemented useMemo and useCallback for expensive operations
+- **CSS Architecture**: Added modal styles, achievement cards, chart visualizations, improved responsive design
+- **State Management**: Better error state handling, achievement tracking, settings persistence
+- **Accessibility**: WCAG compliance improvements, keyboard shortcuts, semantic HTML structure
+
 ## [1.0.0] - 2026-01-18
 
 ### Added
