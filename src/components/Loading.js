@@ -1,6 +1,9 @@
+// Loading Component
+// Displays a spinning loader with customizable message for loading states.
 export default function Loading({ message = 'Loading...' }) {
   return (
     <div style={{ textAlign: 'center', padding: '40px' }}>
+      {/* Spinning loader animation */}
       <div style={{
         width: '40px',
         height: '40px',
