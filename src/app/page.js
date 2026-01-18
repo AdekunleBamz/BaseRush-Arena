@@ -46,8 +46,9 @@ export default function Home() {
   const [showChart, setShowChart] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
 
-  // Gamification features
-  const [currentStreak, setCurrentStreak] = useState(2)
+  // Performance metrics
+  const [loadTime, setLoadTime] = useState(0)
+  const [renderCount, setRenderCount] = useState(0)
   const [bestStreak, setBestStreak] = useState(5)
   const [showAchievement, setShowAchievement] = useState(false)
   const [latestAchievement, setLatestAchievement] = useState('')
@@ -169,6 +170,16 @@ export default function Home() {
     }
     localStorage.setItem('baserush-settings', JSON.stringify(settings))
   }, [animationsEnabled, compactMode])
+
+  // Performance tracking
+  useEffect(() => {
+    const startTime = performance.now()
+    setLoadTime(performance.now() - startTime)
+  }, [])
+
+  useEffect(() => {
+    setRenderCount(prev => prev + 1)
+  })
 
   // Contract reads
   // Get current round info
@@ -696,8 +707,28 @@ export default function Home() {
                     📤 Import Settings
                   </button>
                 </div>
+              <div className="setting-group">
+                <h4>Performance Metrics</h4>
+                <div className="performance-metrics">
+                  <div className="metric-item">
+                    <span className="metric-label">Load Time:</span>
+                    <span className="metric-value">{loadTime.toFixed(2)}ms</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Render Count:</span>
+                    <span className="metric-value">{renderCount}</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Theme:</span>
+                    <span className="metric-value">{isDark ? 'Dark' : 'Light'}</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Sound:</span>
+                    <span className="metric-value">{isSoundEnabled ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </div>
                 <p style={{ fontSize: '12px', opacity: 0.7, margin: '8px 0 0 0' }}>
-                  Export your settings to backup or share. Import to restore from a backup file.
+                  Monitor app performance and current configuration.
                 </p>
               </div>
             </div>
