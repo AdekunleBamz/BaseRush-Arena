@@ -1,23 +1,30 @@
+
+// Leaderboard Component
+// Displays the top players with their entries and wins. Currently uses sample data.
 'use client'
 
+
+// React and external hooks
 import { useEffect, useState } from 'react'
 import { useReadContract } from 'wagmi'
+
+// App-specific imports
 import { CONTRACTS, GAME_POOL_ABI } from '../lib/contracts'
 import Loading from './Loading'
 import ErrorMessage from './ErrorMessage'
 
+
+// Main Leaderboard component
 export default function Leaderboard() {
+  // State for leaderboard data and loading
   const [leaderboard, setLeaderboard] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // This is a simplified leaderboard - in reality you'd need contract functions
-  // For now, we'll simulate with some sample data
+  // Simulate fetching leaderboard data (replace with contract call in production)
   useEffect(() => {
-    // Simulate fetching leaderboard data
     const fetchLeaderboard = async () => {
       try {
-        // In a real implementation, you'd call contract functions here
-        // For now, using sample data
+        // Sample data for demonstration
         const sampleData = [
           { address: '0x1234...abcd', entries: 150, wins: 45 },
           { address: '0x5678...efgh', entries: 120, wins: 38 },
@@ -32,7 +39,6 @@ export default function Leaderboard() {
         setLoading(false)
       }
     }
-
     fetchLeaderboard()
   }, [])
 
