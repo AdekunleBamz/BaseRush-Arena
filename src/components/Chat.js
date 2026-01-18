@@ -56,6 +56,7 @@ export default function Chat() {
     <div className="card">
       <h2>💬 Chat</h2>
 
+      {/* Messages container with auto-scroll */}
       <div style={{
         height: '300px',
         overflowY: 'auto',
@@ -92,6 +93,7 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Message input and send button for connected users */}
       {isConnected ? (
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
