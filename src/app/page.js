@@ -292,7 +292,9 @@ export default function Home() {
             <div className="stat-value">{badgeCount?.toString() || '0'}</div>
           </div>
           <div className="stat">
-            <div className="stat-label">Staked</div>
+            <Tooltip content="ETH amount staked in the reward vault">
+              <div className="stat-label">Staked</div>
+            </Tooltip>
             <div className="stat-value">
               {stakeInfo ? formatEther(stakeInfo[0]).slice(0, 6) : '0'} ETH
             </div>
