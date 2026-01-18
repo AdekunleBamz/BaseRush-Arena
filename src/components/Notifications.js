@@ -1,8 +1,16 @@
+
+// Notifications Component
+// Displays user notifications for game events (win, prize, entry, stake, etc.).
 'use client'
 
+
+// React hooks
 import { useState, useEffect } from 'react'
 
+
+// Main Notifications component
 export default function Notifications() {
+  // State for notifications list
   const [notifications, setNotifications] = useState([
     {
       id: 1,
