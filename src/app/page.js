@@ -236,6 +236,8 @@ export default function Home() {
 
   return (
     <div className="container">
+
+      {/* Header with logo, theme toggle, and wallet address */}
       <div className="header">
         <div className="logo">⚡ BaseRush Arena</div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -253,7 +255,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Player Stats */}
+
+      {/* Player Stats section */}
       <div className="card">
         <div className="grid">
           <div className="stat">
@@ -277,7 +280,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Tab Navigation */}
+
+      {/* Tab Navigation for Game, Stake, Badges */}
       <div className="card">
         <div style={{display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap'}}>
           <button
