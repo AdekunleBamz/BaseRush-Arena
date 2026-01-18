@@ -19,6 +19,8 @@ export default function Leaderboard() {
   // State for leaderboard data and loading
   const [leaderboard, setLeaderboard] = useState([])
   const [loading, setLoading] = useState(true)
+  const [sortBy, setSortBy] = useState('wins') // Default sort by wins
+  const [sortDirection, setSortDirection] = useState('desc') // desc or asc
 
   // Simulate fetching leaderboard data (replace with contract call in production)
   useEffect(() => {
@@ -42,6 +44,33 @@ export default function Leaderboard() {
     fetchLeaderboard()
   }, [])
 
+  // Sort leaderboard data
+  const sortedLeaderboard = [...leaderboard].sort((a, b) => {
+    let aVal = a[sortBy]
+    let bVal = b[sortBy]
+    
+    if (sortBy === 'winRate') {
+      aVal = a.wins / a.entries
+      bVal = b.wins / b.entries
+    }
+    
+    if (sortDirection === 'asc') {
+      return aVal - bVal
+    } else {
+      return bVal - aVal
+    }
+  })
+
+  // Handle sort click
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortBy(column)
+      setSortDirection('desc')
+    }
+  }
+
   if (loading) return <Loading message="Loading leaderboard..." />
 
   return (
@@ -53,13 +82,28 @@ export default function Leaderboard() {
             <tr style={{ background: 'rgba(0,0,0,0.2)' }}>
               <th style={{ padding: '12px', textAlign: 'left' }}>Rank</th>
               <th style={{ padding: '12px', textAlign: 'left' }}>Player</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>Entries</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>Wins</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>Win Rate</th>
+              <th 
+                style={{ padding: '12px', textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('entries')}
+              >
+                Entries {sortBy === 'entries' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th 
+                style={{ padding: '12px', textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('wins')}
+              >
+                Wins {sortBy === 'wins' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th 
+                style={{ padding: '12px', textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('winRate')}
+              >
+                Win Rate {sortBy === 'winRate' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {leaderboard.map((player, index) => (
+            {sortedLeaderboard.map((player, index) => (
               <tr key={player.address} style={{
                 borderBottom: '1px solid rgba(255,255,255,0.1)',
                 background: index === 0 ? 'rgba(255,215,0,0.1)' : 'transparent'
