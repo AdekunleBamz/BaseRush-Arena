@@ -10,14 +10,22 @@ export default function Loading({ message = 'Loading...' }) {
         border: '4px solid rgba(255,255,255,0.3)',
         borderTop: '4px solid #fff',
         borderRadius: '50%',
-        animation: 'spin 1s linear infinite',
+        animation: 'spin 1s linear infinite, pulse 2s infinite',
         margin: '0 auto 16px'
       }} />
-      <p>{message}</p>
+      <p style={{ animation: 'fadeIn 1s ease-in' }}>{message}</p>
       <style jsx>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
     </div>
