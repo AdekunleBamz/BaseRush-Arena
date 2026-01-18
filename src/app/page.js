@@ -39,6 +39,54 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState('')
   const [showError, setShowError] = useState(false)
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      // Only handle keyboard shortcuts when not typing in inputs
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+        return
+      }
+
+      switch (event.key) {
+        case '1':
+        case '2':
+        case '3':
+          event.preventDefault()
+          const optionIndex = parseInt(event.key) - 1
+          if (optionIndex >= 0 && optionIndex <= 2) {
+            setSelectedOption(optionIndex)
+            playSound('click')
+          }
+          break
+        case 'Enter':
+          event.preventDefault()
+          if (event.ctrlKey || event.metaKey) {
+            enterGame()
+          }
+          break
+        case 't':
+          event.preventDefault()
+          toggleTheme()
+          break
+        case 's':
+          event.preventDefault()
+          toggleSound()
+          break
+        case 'ArrowLeft':
+          event.preventDefault()
+          setActiveTab(prev => prev === 'game' ? 'leaderboard' : prev === 'leaderboard' ? 'chat' : 'game')
+          break
+        case 'ArrowRight':
+          event.preventDefault()
+          setActiveTab(prev => prev === 'game' ? 'chat' : prev === 'chat' ? 'leaderboard' : 'game')
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [playSound, enterGame, toggleTheme, toggleSound])
+
   // Contract reads
   // Get current round info
   const { data: roundInfo, refetch: refetchRound, isLoading: roundLoading } = useReadContract({
@@ -304,43 +352,54 @@ export default function Home() {
   return (
     <div className="container">
 
+      {/* Skip link for accessibility */}
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+
       {/* Header with logo, theme toggle, sound toggle, and wallet address */}
-      <div className="header">
-        <div className="logo">⚡ BaseRush Arena</div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button
-            className="btn"
-            onClick={toggleTheme}
-            style={{ fontSize: '18px', padding: '8px 12px' }}
-            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
-          <button
-            className="btn"
-            onClick={toggleSound}
-            style={{ fontSize: '18px', padding: '8px 12px' }}
-            title={isSoundEnabled ? 'Disable sound' : 'Enable sound'}
-          >
-            {isSoundEnabled ? '🔊' : '🔇'}
-          </button>
-          <button className="btn" onClick={() => open()}>
-            {address?.slice(0, 6)}...{address?.slice(-4)}
-          </button>
-        </div>
-      </div>
+      <header className="header" role="banner">
+        <h1 className="logo">⚡ BaseRush Arena</h1>
+        <nav aria-label="User controls">
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <button
+              className="btn"
+              onClick={toggleTheme}
+              style={{ fontSize: '18px', padding: '8px 12px' }}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-pressed={isDark}
+            >
+              {isDark ? '☀️' : '🌙'}
+            </button>
+            <button
+              className="btn"
+              onClick={toggleSound}
+              style={{ fontSize: '18px', padding: '8px 12px' }}
+              aria-label={isSoundEnabled ? 'Disable sound effects' : 'Enable sound effects'}
+              aria-pressed={isSoundEnabled}
+            >
+              {isSoundEnabled ? '🔊' : '🔇'}
+            </button>
+            <button
+              className="btn"
+              onClick={() => open()}
+              aria-label={isConnected ? `Connected wallet: ${address?.slice(0, 6)}...${address?.slice(-4)}` : 'Connect wallet'}
+            >
+              {address?.slice(0, 6)}...{address?.slice(-4)}
+            </button>
+          </div>
+        </nav>
+      </header>
 
 
       {/* Error Message Display */}
       {showError && (
-        <div className="error-banner">
+        <div className="error-banner" role="alert" aria-live="assertive">
           <div className="error-content">
-            <span className="error-icon">⚠️</span>
+            <span className="error-icon" aria-hidden="true">⚠️</span>
             <span className="error-text">{errorMessage}</span>
             <button
               className="error-close"
               onClick={() => setShowError(false)}
-              title="Close error message"
+              aria-label="Close error message"
             >
               ✕
             </button>
@@ -348,22 +407,24 @@ export default function Home() {
         </div>
       )}
 
-      {/* Player Stats section */}
-      <div className="card">
-        <div className="grid">
-          <div className="stat">
+      {/* Main content */}
+      <main id="main-content">
+      <section className="card" aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className="sr-only">Player Statistics</h2>
+        <div className="grid" role="list">
+          <div className="stat" role="listitem">
             <Tooltip content="Total number of game entries you've made">
               <div className="stat-label">Total Entries</div>
             </Tooltip>
-            <div className="stat-value">
+            <div className="stat-value" aria-label={`Total entries: ${isLoadingStats ? 'Loading' : (playerEntries?.toString() || '0')}`}>
               {isLoadingStats ? <Loading /> : (playerEntries?.toString() || '0')}
             </div>
           </div>
-          <div className="stat">
+          <div className="stat" role="listitem">
             <Tooltip content="Number of rounds you've won">
               <div className="stat-label">Wins</div>
             </Tooltip>
-            <div className="stat-value">
+            <div className="stat-value" aria-label={`Wins: ${isLoadingStats ? 'Loading' : (playerWins?.toString() || '0')}`}>
               {isLoadingStats ? <Loading /> : (playerWins?.toString() || '0')}
             </div>
           </div>
@@ -400,7 +461,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
 
       {/* Tab Navigation for Game, Stake, Badges */}
@@ -607,6 +668,7 @@ export default function Home() {
           ✅ Transaction confirmed!
         </div>
       )}
+      </main>
     </div>
   )
 }
