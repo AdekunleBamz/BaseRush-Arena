@@ -27,6 +27,7 @@ export default function Notifications() {
       timestamp: Date.now() - 120000
     }
   ])
+  const [filterType, setFilterType] = useState('all') // all, win, prize, entry, stake
 
   const addNotification = (notification) => {
     const newNotification = {
@@ -73,6 +74,11 @@ export default function Notifications() {
     }
   }
 
+  // Get filtered notifications
+  const filteredNotifications = filterType === 'all' 
+    ? notifications 
+    : notifications.filter(n => n.type === filterType)
+
   // Expose addNotification for parent components
   useEffect(() => {
     window.addNotification = addNotification
@@ -84,14 +90,28 @@ export default function Notifications() {
   return (
     <div className="card">
       <h2>🔔 Notifications</h2>
+      
+      {/* Filter buttons */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+        {['all', 'win', 'prize', 'entry', 'stake'].map(type => (
+          <button
+            key={type}
+            className={`btn ${filterType === type ? 'btn-primary' : ''}`}
+            onClick={() => setFilterType(type)}
+            style={{ fontSize: '12px', padding: '4px 8px' }}
+          >
+            {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+      </div>
 
-      {notifications.length === 0 ? (
+      {filteredNotifications.length === 0 ? (
         <p style={{ textAlign: 'center', opacity: 0.7, padding: '40px' }}>
-          No notifications yet
+          {filterType === 'all' ? 'No notifications yet' : `No ${filterType} notifications`}
         </p>
       ) : (
         <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          {notifications.map(notification => (
+          {filteredNotifications.map(notification => (
             <div
               key={notification.id}
               style={{
@@ -167,7 +187,7 @@ export default function Notifications() {
         }}
         disabled={notifications.length === 0}
       >
-        Clear All
+        Clear All ({notifications.length})
       </button>
     </div>
   )
