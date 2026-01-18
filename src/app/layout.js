@@ -1,7 +1,10 @@
+// Root Layout Component
+// Provides the main HTML structure and wraps the app with providers.
 import { Web3Provider } from '../lib/web3'
 import { ThemeProvider } from '../lib/theme-context'
 import './globals.css'
 
+// Metadata for SEO and social sharing
 export const metadata = {
   title: 'BaseRush Arena',
   description: 'Compete, stake, and earn on Base',
@@ -12,10 +15,12 @@ export const metadata = {
   }
 }
 
+// Root layout component
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        {/* Wrap app with Web3 and Theme providers */}
         <Web3Provider>
           <ThemeProvider>
             {children}
