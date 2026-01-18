@@ -3,7 +3,16 @@
   "version": "2.0.0",
   "private": true,
   "description": "A feature-rich Web3 prediction game dApp on Base Network with achievements, analytics, and modern UX",
-  "keywords": ["web3", "dapp", "prediction", "game", "base", "ethereum", "nextjs", "react"],
+  "keywords": [
+    "web3",
+    "dapp",
+    "prediction",
+    "game",
+    "base",
+    "ethereum",
+    "nextjs",
+    "react"
+  ],
   "author": "BaseRush Arena Team",
   "license": "MIT",
   "scripts": {
@@ -43,4 +52,8 @@
     ">0.3%",
     "not ie 11",
     "not dead"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^9.39.2"
+  }
+}

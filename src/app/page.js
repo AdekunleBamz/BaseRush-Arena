@@ -17,7 +17,7 @@ import ErrorMessage from '../components/ErrorMessage'
 import Leaderboard from '../components/Leaderboard'
 import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
-import { Skeleton } from '../components/Skeleton'
+import Skeleton from '../components/Skeleton'
 import ActivityLog from '../components/ActivityLog'
 import { useTheme } from '../lib/theme-context'
 import { useSound } from '../lib/sound-context'
@@ -628,108 +628,6 @@ export default function Home() {
                   />
                   <span>Enable Animations</span>
                 </label>
-              </div>
-
-              <div className="setting-group">
-                <h4>Data Management</h4>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      const settings = {
-                        theme: isDark ? 'dark' : 'light',
-                        soundEnabled: isSoundEnabled,
-                        animationsEnabled,
-                        compactMode
-                      }
-                      const dataStr = JSON.stringify(settings, null, 2)
-                      const dataBlob = new Blob([dataStr], { type: 'application/json' })
-                      const url = URL.createObjectURL(dataBlob)
-                      const link = document.createElement('a')
-                      link.href = url
-                      link.download = 'baserush-settings.json'
-                      document.body.appendChild(link)
-                      link.click()
-                      document.body.removeChild(link)
-                      URL.revokeObjectURL(url)
-                    }}
-                  >
-                    📥 Export Settings
-                  </button>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      const input = document.createElement('input')
-                      input.type = 'file'
-                      input.accept = '.json'
-                      input.onchange = (e) => {
-                        const file = e.target.files[0]
-                        if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (e) => {
-                            try {
-                              const settings = JSON.parse(e.target.result)
-                              if (settings.theme) {
-                                setIsDark(settings.theme === 'dark')
-                              }
-                              if (typeof settings.soundEnabled === 'boolean') {
-                                setIsSoundEnabled(settings.soundEnabled)
-                              }
-                              if (typeof settings.animationsEnabled === 'boolean') {
-                                setAnimationsEnabled(settings.animationsEnabled)
-                              }
-                              if (typeof settings.compactMode === 'boolean') {
-                                setCompactMode(settings.compactMode)
-                              }
-                              if (window.addNotification) {
-                                window.addNotification({
-                                  type: 'win',
-                                  title: 'Settings Imported',
-                                  message: 'Your settings have been successfully imported'
-                                })
-                              }
-                            } catch (error) {
-                              if (window.addNotification) {
-                                window.addNotification({
-                                  type: 'stake',
-                                  title: 'Import Failed',
-                                  message: 'Invalid settings file format'
-                                })
-                              }
-                            }
-                          }
-                          reader.readAsText(file)
-                        }
-                      }
-                      input.click()
-                    }}
-                  >
-                    📤 Import Settings
-                  </button>
-                </div>
-              <div className="setting-group">
-                <h4>Performance Metrics</h4>
-                <div className="performance-metrics">
-                  <div className="metric-item">
-                    <span className="metric-label">Load Time:</span>
-                    <span className="metric-value">{loadTime.toFixed(2)}ms</span>
-                  </div>
-                  <div className="metric-item">
-                    <span className="metric-label">Render Count:</span>
-                    <span className="metric-value">{renderCount}</span>
-                  </div>
-                  <div className="metric-item">
-                    <span className="metric-label">Theme:</span>
-                    <span className="metric-value">{isDark ? 'Dark' : 'Light'}</span>
-                  </div>
-                  <div className="metric-item">
-                    <span className="metric-label">Sound:</span>
-                    <span className="metric-value">{isSoundEnabled ? 'Enabled' : 'Disabled'}</span>
-                  </div>
-                </div>
-                <p style={{ fontSize: '12px', opacity: 0.7, margin: '8px 0 0 0' }}>
-                  Monitor app performance and current configuration.
-                </p>
               </div>
             </div>
           </div>
