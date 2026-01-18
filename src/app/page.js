@@ -302,6 +302,7 @@ export default function Home() {
           >
             🏆 Badges
           </button>
+          {/* Additional tabs for Leaderboard, Chat, Notifications */}
           <button
             className={`btn ${activeTab === 'leaderboard' ? 'btn-primary' : ''}`}
             onClick={() => setActiveTab('leaderboard')}
@@ -322,7 +323,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Game Tab */}
+        {/* Game Tab UI */}
         {activeTab === 'game' && (
           <div>
             <h2>Current Round #{roundInfo?.[0]?.toString()}</h2>
@@ -347,6 +348,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Prediction selection UI */}
             <div style={{marginTop: '24px'}}>
               <h3>Select Your Prediction</h3>
               <button 
