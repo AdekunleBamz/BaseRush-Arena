@@ -9,6 +9,36 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   color: #fff;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dark-theme body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e0e0e0;
+}
+
+.dark-theme .header {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .stat {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme input {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+.dark-theme input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .container {

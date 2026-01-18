@@ -1,4 +1,5 @@
 import { Web3Provider } from '../lib/web3'
+import { ThemeProvider } from '../lib/theme-context'
 import './globals.css'
 
 export const metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Web3Provider>
-          {children}
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </Web3Provider>
       </body>
     </html>

@@ -10,12 +10,14 @@ import ErrorMessage from '../components/ErrorMessage'
 import Leaderboard from '../components/Leaderboard'
 import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
+import { useTheme } from '../lib/theme-context'
 
 export default function Home() {
   const { open } = useAppKit()
   const { address, isConnected } = useAccount()
   const { writeContract, data: hash, error: writeError, isPending } = useWriteContract()
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
+  const { isDark, toggleTheme } = useTheme()
   
   const [selectedOption, setSelectedOption] = useState(0)
   const [multiCount, setMultiCount] = useState(1)
@@ -190,9 +192,19 @@ export default function Home() {
     <div className="container">
       <div className="header">
         <div className="logo">⚡ BaseRush Arena</div>
-        <button className="btn" onClick={() => open()}>
-          {address?.slice(0, 6)}...{address?.slice(-4)}
-        </button>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button
+            className="btn"
+            onClick={toggleTheme}
+            style={{ fontSize: '18px', padding: '8px 12px' }}
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
+          <button className="btn" onClick={() => open()}>
+            {address?.slice(0, 6)}...{address?.slice(-4)}
+          </button>
+        </div>
       </div>
 
       {/* Player Stats */}
