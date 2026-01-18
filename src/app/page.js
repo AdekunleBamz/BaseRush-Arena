@@ -43,6 +43,12 @@ export default function Home() {
   const [compactMode, setCompactMode] = useState(false)
   const [showChart, setShowChart] = useState(false)
 
+  // Gamification features
+  const [currentStreak, setCurrentStreak] = useState(2)
+  const [bestStreak, setBestStreak] = useState(5)
+  const [showAchievement, setShowAchievement] = useState(false)
+  const [latestAchievement, setLatestAchievement] = useState('')
+
   // Mock data for demonstration - in a real app this would come from contract events
   const gameHistory = [
     { round: 1, result: 'win', amount: 0.001 },
@@ -54,6 +60,41 @@ export default function Home() {
     { round: 7, result: 'win', amount: 0.001 },
     { round: 8, result: 'loss', amount: -0.0001 },
   ]
+
+  // Achievement definitions
+  const achievements = [
+    { id: 'first_win', name: 'First Victory', description: 'Win your first game', icon: '🏆', unlocked: true },
+    { id: 'win_streak_3', name: 'Hot Streak', description: 'Win 3 games in a row', icon: '🔥', unlocked: true },
+    { id: 'win_streak_5', name: 'Unstoppable', description: 'Win 5 games in a row', icon: '⚡', unlocked: false },
+    { id: 'big_winner', name: 'High Roller', description: 'Stake more than 0.01 ETH', icon: '💰', unlocked: false },
+    { id: 'dedicated', name: 'Dedicated Player', description: 'Play 10 games', icon: '🎯', unlocked: false },
+    { id: 'legend', name: 'Legend', description: 'Achieve 90%+ win rate', icon: '👑', unlocked: false },
+  ]
+
+  // Function to check and unlock achievements
+  const checkAchievements = useCallback(() => {
+    const totalGames = Number(playerEntries || 0)
+    const wins = Number(playerWins || 0)
+    const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0
+
+    // Check for new achievements
+    if (totalGames >= 10 && !achievements.find(a => a.id === 'dedicated').unlocked) {
+      setLatestAchievement('Dedicated Player')
+      setShowAchievement(true)
+      setTimeout(() => setShowAchievement(false), 3000)
+    }
+
+    if (winRate >= 90 && !achievements.find(a => a.id === 'legend').unlocked) {
+      setLatestAchievement('Legend')
+      setShowAchievement(true)
+      setTimeout(() => setShowAchievement(false), 3000)
+    }
+  }, [playerEntries, playerWins])
+
+  // Check achievements when stats change
+  useEffect(() => {
+    checkAchievements()
+  }, [checkAchievements])
 
   // Keyboard navigation
   useEffect(() => {
@@ -455,6 +496,19 @@ export default function Home() {
         </div>
       )}
 
+      {/* Achievement Notification */}
+      {showAchievement && (
+        <div className="achievement-banner" role="alert" aria-live="assertive">
+          <div className="achievement-content">
+            <span className="achievement-icon" aria-hidden="true">🎉</span>
+            <div className="achievement-text">
+              <div className="achievement-title">Achievement Unlocked!</div>
+              <div className="achievement-name">{latestAchievement}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Settings Modal */}
       {showSettings && (
         <div className="modal-overlay" onClick={() => setShowSettings(false)}>
@@ -592,6 +646,22 @@ export default function Home() {
               {isLoadingStats ? <Loading /> : `${pendingRewards.slice(0, 6)} ETH`}
             </div>
           </div>
+          <div className="stat">
+            <Tooltip content="Current winning streak">
+              <div className="stat-label">Current Streak</div>
+            </Tooltip>
+            <div className="stat-value" style={{ color: currentStreak > 0 ? '#4CAF50' : '#fff' }}>
+              {currentStreak}
+            </div>
+          </div>
+          <div className="stat">
+            <Tooltip content="Best winning streak achieved">
+              <div className="stat-label">Best Streak</div>
+            </Tooltip>
+            <div className="stat-value" style={{ color: '#FFD700' }}>
+              {bestStreak}
+            </div>
+          </div>
         </div>
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
           <button
@@ -690,6 +760,12 @@ export default function Home() {
             onClick={() => setActiveTab('stake')}
           >
             💰 Stake
+          </button>
+          <button
+            className={`btn ${activeTab === 'badges' ? 'btn-primary' : ''}`}
+            onClick={() => setActiveTab('badges')}
+          >
+            🏆 Achievements
           </button>
           <button
             className={`btn ${activeTab === 'badges' ? 'btn-primary' : ''}`}
@@ -836,24 +912,41 @@ export default function Home() {
           </div>
         )}
 
-        {/* Badges Tab UI */}
+        {/* Achievements Tab UI */}
         {activeTab === 'badges' && (
           <div>
-            <h2>Achievement Badges</h2>
+            <h2>Achievements & Milestones</h2>
             <p style={{opacity: 0.8, marginBottom: '24px'}}>
-              Collect badges by completing milestones!
+              Unlock achievements by reaching milestones and maintaining streaks!
             </p>
 
-            {/* Badge list with claim buttons */}
-            <div style={{display: 'grid', gap: '12px'}}>
-              {Object.entries(BADGE_TYPES).map(([name, id]) => (
-                <div key={id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px'}}>
-                  <span>{name.replace(/_/g, ' ')}</span>
-                  <button className="btn" onClick={() => claimBadge(id)} disabled={isConfirming || isPending}>
-                    {isPending ? 'Requesting...' : 'Claim'}
-                  </button>
+            {/* Achievement grid */}
+            <div className="achievements-grid">
+              {achievements.map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className={`achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+                >
+                  <div className="achievement-icon">
+                    {achievement.unlocked ? achievement.icon : '🔒'}
+                  </div>
+                  <div className="achievement-info">
+                    <h3 className="achievement-name">{achievement.name}</h3>
+                    <p className="achievement-description">{achievement.description}</p>
+                  </div>
+                  {achievement.unlocked && (
+                    <div className="achievement-badge">✓</div>
+                  )}
                 </div>
               ))}
+            </div>
+
+            {/* Streak information */}
+            <div className="streak-info" style={{ marginTop: '24px', padding: '16px', background: 'rgba(255, 193, 7, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 193, 7, 0.3)' }}>
+              <h3 style={{ margin: '0 0 8px 0', color: '#FFD700' }}>🔥 Current Streak</h3>
+              <p style={{ margin: 0, opacity: 0.9 }}>
+                You're on a {currentStreak} game winning streak! Keep it up to unlock the "Unstoppable" achievement.
+              </p>
             </div>
           </div>
         )}
