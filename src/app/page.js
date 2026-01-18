@@ -197,6 +197,11 @@ export default function Home() {
     )
   }
 
+
+  /**
+   * Claim achievement badge NFT
+   * @param {string} badgeType - Type of badge to claim
+   */
   const claimBadge = (badgeType) => {
     handleTransaction(() =>
       writeContract({
@@ -208,6 +213,8 @@ export default function Home() {
     )
   }
 
+
+  // Render UI for disconnected state
   if (!isConnected) {
     return (
       <div className="container">
