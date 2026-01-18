@@ -280,7 +280,9 @@ export default function Home() {
             <div className="stat-value">{playerEntries?.toString() || '0'}</div>
           </div>
           <div className="stat">
-            <div className="stat-label">Wins</div>
+            <Tooltip content="Number of rounds you've won">
+              <div className="stat-label">Wins</div>
+            </Tooltip>
             <div className="stat-value">{playerWins?.toString() || '0'}</div>
           </div>
           <div className="stat">
