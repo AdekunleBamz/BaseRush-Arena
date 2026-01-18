@@ -1,3 +1,5 @@
+// Web3 Configuration
+// Sets up Wagmi, AppKit, and React Query for blockchain interactions.
 'use client'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -14,6 +16,7 @@ const networks = [base]
 let wagmiAdapterInstance = null
 let appKitInitialized = false
 
+// Get or create WagmiAdapter singleton
 function getWagmiAdapter() {
   if (!wagmiAdapterInstance) {
     try {
@@ -32,6 +35,7 @@ function getWagmiAdapter() {
   return wagmiAdapterInstance
 }
 
+// Initialize AppKit for wallet connections
 function initializeAppKit() {
   if (typeof window === 'undefined' || appKitInitialized) {
     return
