@@ -38,6 +38,9 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('game')
   const [errorMessage, setErrorMessage] = useState('')
   const [showError, setShowError] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  const [animationsEnabled, setAnimationsEnabled] = useState(true)
+  const [compactMode, setCompactMode] = useState(false)
 
   // Keyboard navigation
   useEffect(() => {
@@ -86,6 +89,29 @@ export default function Home() {
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [playSound, enterGame, toggleTheme, toggleSound])
+
+  // Load settings from localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('baserush-settings')
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings)
+        setAnimationsEnabled(settings.animationsEnabled ?? true)
+        setCompactMode(settings.compactMode ?? false)
+      } catch (error) {
+        console.warn('Failed to load settings:', error)
+      }
+    }
+  }, [])
+
+  // Save settings to localStorage
+  useEffect(() => {
+    const settings = {
+      animationsEnabled,
+      compactMode
+    }
+    localStorage.setItem('baserush-settings', JSON.stringify(settings))
+  }, [animationsEnabled, compactMode])
 
   // Contract reads
   // Get current round info
@@ -380,6 +406,15 @@ export default function Home() {
             </button>
             <button
               className="btn"
+              onClick={() => setShowSettings(true)}
+              style={{ fontSize: '18px', padding: '8px 12px' }}
+              aria-label="Open settings panel"
+              title="Settings"
+            >
+              ⚙️
+            </button>
+            <button
+              className="btn"
               onClick={() => open()}
               aria-label={isConnected ? `Connected wallet: ${address?.slice(0, 6)}...${address?.slice(-4)}` : 'Connect wallet'}
             >
@@ -403,6 +438,90 @@ export default function Home() {
             >
               ✕
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="modal-overlay" onClick={() => setShowSettings(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Settings</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowSettings(false)}
+                aria-label="Close settings"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="setting-group">
+                <h4>Appearance</h4>
+                <label className="setting-item">
+                  <input
+                    type="checkbox"
+                    checked={isDark}
+                    onChange={toggleTheme}
+                  />
+                  <span>Dark Mode</span>
+                </label>
+                <label className="setting-item">
+                  <input
+                    type="checkbox"
+                    checked={compactMode}
+                    onChange={(e) => setCompactMode(e.target.checked)}
+                  />
+                  <span>Compact Mode</span>
+                </label>
+              </div>
+
+              <div className="setting-group">
+                <h4>Audio</h4>
+                <label className="setting-item">
+                  <input
+                    type="checkbox"
+                    checked={isSoundEnabled}
+                    onChange={toggleSound}
+                  />
+                  <span>Sound Effects</span>
+                </label>
+              </div>
+
+              <div className="setting-group">
+                <h4>Accessibility</h4>
+                <label className="setting-item">
+                  <input
+                    type="checkbox"
+                    checked={animationsEnabled}
+                    onChange={(e) => setAnimationsEnabled(e.target.checked)}
+                  />
+                  <span>Enable Animations</span>
+                </label>
+              </div>
+
+              <div className="setting-group">
+                <h4>Keyboard Shortcuts</h4>
+                <div className="shortcut-list">
+                  <div className="shortcut-item">
+                    <kbd>1-3</kbd> <span>Select prediction option</span>
+                  </div>
+                  <div className="shortcut-item">
+                    <kbd>Ctrl/Cmd + Enter</kbd> <span>Enter game</span>
+                  </div>
+                  <div className="shortcut-item">
+                    <kbd>T</kbd> <span>Toggle theme</span>
+                  </div>
+                  <div className="shortcut-item">
+                    <kbd>S</kbd> <span>Toggle sound</span>
+                  </div>
+                  <div className="shortcut-item">
+                    <kbd>← →</kbd> <span>Switch tabs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
