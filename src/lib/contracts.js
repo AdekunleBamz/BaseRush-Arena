@@ -45,7 +45,7 @@ export const ACHIEVEMENT_NFT_ABI = [
   'function balanceOf(address owner) external view returns (uint256)',
 ];
 
-// Badge Types
+// Badge Types enumeration
 export const BADGE_TYPES = {
   FIRST_ENTRY: 0,
   TEN_ENTRIES: 1,
