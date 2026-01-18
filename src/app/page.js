@@ -5,6 +5,11 @@ import { useAppKit } from '@reown/appkit/react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 import { CONTRACTS, GAME_POOL_ABI, REWARD_VAULT_ABI, ACHIEVEMENT_NFT_ABI, BADGE_TYPES } from '../lib/contracts'
+import Loading from '../components/Loading'
+import ErrorMessage from '../components/ErrorMessage'
+import Leaderboard from '../components/Leaderboard'
+import Chat from '../components/Chat'
+import Notifications from '../components/Notifications'
 
 export default function Home() {
   const { open } = useAppKit()
@@ -216,24 +221,42 @@ export default function Home() {
 
       {/* Tab Navigation */}
       <div className="card">
-        <div style={{display: 'flex', gap: '16px', marginBottom: '24px'}}>
-          <button 
+        <div style={{display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap'}}>
+          <button
             className={`btn ${activeTab === 'game' ? 'btn-primary' : ''}`}
             onClick={() => setActiveTab('game')}
           >
             🎮 Game
           </button>
-          <button 
+          <button
             className={`btn ${activeTab === 'stake' ? 'btn-primary' : ''}`}
             onClick={() => setActiveTab('stake')}
           >
             💰 Stake
           </button>
-          <button 
+          <button
             className={`btn ${activeTab === 'badges' ? 'btn-primary' : ''}`}
             onClick={() => setActiveTab('badges')}
           >
             🏆 Badges
+          </button>
+          <button
+            className={`btn ${activeTab === 'leaderboard' ? 'btn-primary' : ''}`}
+            onClick={() => setActiveTab('leaderboard')}
+          >
+            🥇 Leaderboard
+          </button>
+          <button
+            className={`btn ${activeTab === 'chat' ? 'btn-primary' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            💬 Chat
+          </button>
+          <button
+            className={`btn ${activeTab === 'notifications' ? 'btn-primary' : ''}`}
+            onClick={() => setActiveTab('notifications')}
+          >
+            🔔 Notifications
           </button>
         </div>
 
@@ -369,6 +392,15 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        {/* Leaderboard Tab */}
+        {activeTab === 'leaderboard' && <Leaderboard />}
+
+        {/* Chat Tab */}
+        {activeTab === 'chat' && <Chat />}
+
+        {/* Notifications Tab */}
+        {activeTab === 'notifications' && <Notifications />}
       </div>
 
       {isConfirming && (
