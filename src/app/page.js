@@ -80,24 +80,32 @@ export default function Home() {
     }
   }, [isConfirmed])
 
+
+  /**
+   * Handles contract transaction execution with error handling and connection checks.
+   * @param {Function} txFn - Transaction function to execute
+   */
   const handleTransaction = (txFn) => {
+    // Ensure wallet is connected
     if (!isConnected) {
       open()
       return
     }
-    
+
+    // Prevent duplicate transactions
     if (isPending) {
       return // Already processing
     }
-    
+
     try {
       txFn()
     } catch (error) {
       console.error('Transaction error:', error)
-      // If user rejected, don't show error
+      // Ignore user rejection errors
       if (error?.message?.includes('User rejected') || error?.code === 4001) {
         return
       }
+      // Show alert for other errors
       alert(`Transaction failed: ${error?.message || 'Unknown error'}`)
     }
   }
