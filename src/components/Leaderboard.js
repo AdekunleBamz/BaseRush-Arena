@@ -61,13 +61,25 @@ export default function Leaderboard() {
     }
   })
 
-  // Handle sort click
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortBy(column)
-      setSortDirection('desc')
+  // Handle refresh
+  const handleRefresh = async () => {
+    setLoading(true)
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 800))
+      // In production, this would refetch from contract
+      const sampleData = [
+        { address: '0x1234...abcd', entries: Math.floor(Math.random() * 200) + 100, wins: Math.floor(Math.random() * 50) + 20 },
+        { address: '0x5678...efgh', entries: Math.floor(Math.random() * 180) + 80, wins: Math.floor(Math.random() * 40) + 15 },
+        { address: '0x9abc...ijkl', entries: Math.floor(Math.random() * 150) + 60, wins: Math.floor(Math.random() * 35) + 10 },
+        { address: '0xdef0...mnop', entries: Math.floor(Math.random() * 120) + 40, wins: Math.floor(Math.random() * 30) + 8 },
+        { address: '0xqrst...uvwx', entries: Math.floor(Math.random() * 100) + 20, wins: Math.floor(Math.random() * 25) + 5 }
+      ]
+      setLeaderboard(sampleData)
+    } catch (error) {
+      console.error('Failed to refresh leaderboard:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -79,13 +91,11 @@ export default function Leaderboard() {
         <h2>🏆 Leaderboard</h2>
         <button 
           className="btn" 
-          onClick={() => {
-            setLoading(true)
-            setTimeout(() => setLoading(false), 1000) // Simulate refresh
-          }}
+          onClick={handleRefresh}
+          disabled={loading}
           style={{ fontSize: '14px', padding: '6px 12px' }}
         >
-          🔄 Refresh
+          {loading ? '⏳' : '🔄'} {loading ? 'Refreshing...' : 'Refresh'}
         </button>
       </div>
       <div style={{ overflowX: 'auto' }}>
