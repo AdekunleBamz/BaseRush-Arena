@@ -233,8 +233,37 @@ export default function Home() {
       refetchRound()
       refetchStake()
       playSound('win') // Play success sound
+
+      // Add transaction confirmation notification
+      if (window.addNotification) {
+        window.addNotification({
+          type: 'win',
+          title: 'Transaction Confirmed!',
+          message: 'Your transaction has been successfully confirmed on the blockchain'
+        })
+      }
     }
   }, [isConfirmed, refetchRound, refetchStake, playSound])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      // Ctrl/Cmd + , to open settings
+      if ((event.ctrlKey || event.metaKey) && event.key === ',') {
+        event.preventDefault()
+        setShowSettings(true)
+      }
+      // Escape to close modals
+      if (event.key === 'Escape') {
+        setShowSettings(false)
+        setShowHelp(false)
+        setShowError(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [])
 
 
   /**
@@ -1051,13 +1080,24 @@ export default function Home() {
       {/* Transaction status messages */}
       {isConfirming && (
         <div className="card" style={{textAlign: 'center'}}>
-          ⏳ Transaction confirming...
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+            <div className="spinner" style={{width: '16px', height: '16px'}}></div>
+            <span>⏳ Confirming transaction on Base network...</span>
+          </div>
+          <p style={{fontSize: '12px', opacity: 0.7, margin: '8px 0 0 0'}}>
+            This may take a few moments depending on network congestion
+          </p>
         </div>
       )}
 
       {isConfirmed && (
         <div className="card" style={{textAlign: 'center', background: 'rgba(76, 175, 80, 0.3)'}}>
-          ✅ Transaction confirmed!
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+            <span>✅ Transaction confirmed!</span>
+          </div>
+          <p style={{fontSize: '12px', opacity: 0.7, margin: '8px 0 0 0'}}>
+            Your transaction has been successfully processed
+          </p>
         </div>
       )}
       </main>
