@@ -238,3 +238,64 @@ input::placeholder {
     font-size: 20px;
   }
 }
+
+/* Error Banner Styles */
+.error-banner {
+  margin-bottom: 20px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-content {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border: 2px solid #ff4757;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(255, 75, 87, 0.3);
+}
+
+.dark-theme .error-content {
+  background: linear-gradient(135deg, #ff3838 0%, #cc2e2e 100%);
+  border-color: #ff3838;
+  box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4);
+}
+
+.error-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.error-text {
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.error-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

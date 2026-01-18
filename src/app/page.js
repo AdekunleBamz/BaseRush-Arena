@@ -36,6 +36,8 @@ export default function Home() {
   const [multiCount, setMultiCount] = useState(1)
   const [stakeAmount, setStakeAmount] = useState('0.0001')
   const [activeTab, setActiveTab] = useState('game')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [showError, setShowError] = useState(false)
 
   // Contract reads
   // Get current round info
@@ -88,29 +90,48 @@ export default function Home() {
   /**
    * Handles contract transaction execution with error handling and connection checks.
    * @param {Function} txFn - Transaction function to execute
+   * @param {string} actionName - Name of the action for error messages
    */
-  const handleTransaction = (txFn) => {
+  const handleTransaction = (txFn, actionName = 'transaction') => {
     // Ensure wallet is connected
     if (!isConnected) {
+      setErrorMessage('Please connect your wallet to continue')
+      setShowError(true)
+      playSound('error')
       open()
       return
     }
 
     // Prevent duplicate transactions
     if (isPending) {
-      return // Already processing
+      setErrorMessage('Transaction already in progress. Please wait...')
+      setShowError(true)
+      return
     }
 
     try {
       txFn()
     } catch (error) {
       console.error('Transaction error:', error)
-      // Ignore user rejection errors
+
+      // Handle specific error types
+      let userMessage = `Failed to ${actionName}: `
+
       if (error?.message?.includes('User rejected') || error?.code === 4001) {
-        return
+        userMessage += 'Transaction was cancelled by user'
+      } else if (error?.message?.includes('insufficient funds')) {
+        userMessage += 'Insufficient funds for transaction'
+      } else if (error?.message?.includes('network')) {
+        userMessage += 'Network error. Please check your connection'
+      } else if (error?.message?.includes('gas')) {
+        userMessage += 'Gas estimation failed. Try again or increase gas limit'
+      } else {
+        userMessage += error?.message || 'Unknown error occurred'
       }
-      // Show alert for other errors
-      alert(`Transaction failed: ${error?.message || 'Unknown error'}`)
+
+      setErrorMessage(userMessage)
+      setShowError(true)
+      playSound('error')
     }
   }
 
@@ -119,10 +140,24 @@ export default function Home() {
     if (writeError) {
       console.error('Write contract error:', writeError)
       playSound('error') // Play error sound
-      // Don't show alert for user rejection
-      if (!writeError.message?.includes('User rejected') && writeError.code !== 4001) {
-        alert(`Transaction failed: ${writeError.message || 'Unknown error'}`)
+
+      // Handle specific write error types
+      let userMessage = 'Transaction failed: '
+
+      if (writeError.message?.includes('User rejected') || writeError.code === 4001) {
+        return // Don't show error for user rejection
+      } else if (writeError.message?.includes('insufficient funds')) {
+        userMessage += 'Insufficient funds for transaction'
+      } else if (writeError.message?.includes('network')) {
+        userMessage += 'Network error. Please check your connection'
+      } else if (writeError.message?.includes('gas')) {
+        userMessage += 'Gas estimation failed. Try again or increase gas limit'
+      } else {
+        userMessage += writeError.message || 'Unknown error occurred'
       }
+
+      setErrorMessage(userMessage)
+      setShowError(true)
     }
   }, [writeError, playSound])
 
@@ -132,14 +167,15 @@ export default function Home() {
    */
   const enterGame = () => {
     playSound('click') // Play click sound
-    handleTransaction(() => 
+    handleTransaction(() =>
       writeContract({
         address: CONTRACTS.GAME_POOL,
         abi: GAME_POOL_ABI,
         functionName: 'enterGame',
         args: [selectedOption, '0x0000000000000000000000000000000000000000'],
         value: parseEther('0.0001'),
-      })
+      }),
+      'enter game'
     )
   }
 
@@ -155,7 +191,8 @@ export default function Home() {
         functionName: 'multiEntry',
         args: [selectedOption, multiCount, '0x0000000000000000000000000000000000000000'],
         value: parseEther((0.0001 * multiCount).toString()),
-      })
+      }),
+      `enter game ${multiCount} times`
     )
   }
 
@@ -171,7 +208,8 @@ export default function Home() {
         functionName: 'stake',
         args: ['0x0000000000000000000000000000000000000000'],
         value: parseEther(stakeAmount),
-      })
+      }),
+      `stake ${stakeAmount} ETH`
     )
   }
 
@@ -185,7 +223,8 @@ export default function Home() {
         address: CONTRACTS.REWARD_VAULT,
         abi: REWARD_VAULT_ABI,
         functionName: 'claimRewards',
-      })
+      }),
+      'claim rewards'
     )
   }
 
@@ -199,7 +238,8 @@ export default function Home() {
         address: CONTRACTS.REWARD_VAULT,
         abi: REWARD_VAULT_ABI,
         functionName: 'compoundRewards',
-      })
+      }),
+      'compound rewards'
     )
   }
 
@@ -215,7 +255,8 @@ export default function Home() {
         abi: ACHIEVEMENT_NFT_ABI,
         functionName: 'claimBadge',
         args: [badgeType],
-      })
+      }),
+      `claim ${badgeType} badge`
     )
   }
 
@@ -269,6 +310,23 @@ export default function Home() {
         </div>
       </div>
 
+
+      {/* Error Message Display */}
+      {showError && (
+        <div className="error-banner">
+          <div className="error-content">
+            <span className="error-icon">⚠️</span>
+            <span className="error-text">{errorMessage}</span>
+            <button
+              className="error-close"
+              onClick={() => setShowError(false)}
+              title="Close error message"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Player Stats section */}
       <div className="card">
