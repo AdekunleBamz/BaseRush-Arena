@@ -375,6 +375,7 @@ export default function Home() {
                 />
               </div>
 
+              {/* Enter game button with dynamic text and loading states */}
               <button 
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px'}}
@@ -387,7 +388,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Stake Tab */}
+        {/* Stake Tab UI */}
         {activeTab === 'stake' && (
           <div>
             <h2>Staking Pool</h2>
@@ -406,6 +407,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Stake amount input and buttons */}
             <div style={{marginTop: '24px'}}>
               <label>Stake Amount (ETH):</label>
               <input 
@@ -415,6 +417,7 @@ export default function Home() {
                 placeholder="0.0001"
               />
 
+              {/* Stake button */}
               <button 
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px'}}
