@@ -42,6 +42,7 @@ export default function Home() {
   const [animationsEnabled, setAnimationsEnabled] = useState(true)
   const [compactMode, setCompactMode] = useState(false)
   const [showChart, setShowChart] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
 
   // Gamification features
   const [currentStreak, setCurrentStreak] = useState(2)
@@ -469,6 +470,15 @@ export default function Home() {
             </button>
             <button
               className="btn"
+              onClick={() => setShowHelp(true)}
+              style={{ fontSize: '18px', padding: '8px 12px' }}
+              aria-label="Open help and tutorial"
+              title="Help"
+            >
+              ❓
+            </button>
+            <button
+              className="btn"
               onClick={() => open()}
               aria-label={isConnected ? `Connected wallet: ${address?.slice(0, 6)}...${address?.slice(-4)}` : 'Connect wallet'}
             >
@@ -587,6 +597,82 @@ export default function Home() {
                     <kbd>← →</kbd> <span>Switch tabs</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Help & Tutorial Modal */}
+      {showHelp && (
+        <div className="modal-overlay" onClick={() => setShowHelp(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Help & Tutorial</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowHelp(false)}
+                aria-label="Close help"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="help-section">
+                <h4>🎮 How to Play</h4>
+                <ol className="help-steps">
+                  <li><strong>Connect Wallet:</strong> Click the wallet button to connect your Web3 wallet</li>
+                  <li><strong>Choose Option:</strong> Select 0, 1, or 2 for your prediction</li>
+                  <li><strong>Enter Game:</strong> Click "Enter Game" or press Ctrl/Cmd + Enter</li>
+                  <li><strong>Wait for Result:</strong> The smart contract will randomly select a winner</li>
+                  <li><strong>Collect Rewards:</strong> Winners receive ETH from the prize pool</li>
+                </ol>
+              </div>
+
+              <div className="help-section">
+                <h4>💰 Staking & Rewards</h4>
+                <ul className="help-list">
+                  <li><strong>Staking:</strong> Deposit ETH to earn rewards over time</li>
+                  <li><strong>Claim Rewards:</strong> Withdraw earned staking rewards</li>
+                  <li><strong>Compounding:</strong> Reinvest rewards to earn more</li>
+                  <li><strong>APY:</strong> Variable rates based on total staked amount</li>
+                </ul>
+              </div>
+
+              <div className="help-section">
+                <h4>🏆 Achievements</h4>
+                <ul className="help-list">
+                  <li><strong>Streaks:</strong> Build winning streaks for bonus achievements</li>
+                  <li><strong>Milestones:</strong> Reach game count and win rate goals</li>
+                  <li><strong>Badges:</strong> Unlock special badges for accomplishments</li>
+                  <li><strong>Progress:</strong> Track your achievements in the Achievements tab</li>
+                </ul>
+              </div>
+
+              <div className="help-section">
+                <h4>⚙️ Features</h4>
+                <ul className="help-list">
+                  <li><strong>Dark/Light Theme:</strong> Toggle with 🌙 button or press 'T'</li>
+                  <li><strong>Sound Effects:</strong> Enable/disable with 🔊 button or press 'S'</li>
+                  <li><strong>Performance Chart:</strong> View your game history and statistics</li>
+                  <li><strong>Settings:</strong> Customize your experience and accessibility options</li>
+                </ul>
+              </div>
+
+              <div className="help-section">
+                <h4>🛠️ Troubleshooting</h4>
+                <ul className="help-list">
+                  <li><strong>Connection Issues:</strong> Refresh page and reconnect wallet</li>
+                  <li><strong>Transaction Failed:</strong> Check ETH balance and network</li>
+                  <li><strong>Slow Loading:</strong> Ensure stable internet connection</li>
+                  <li><strong>Sound Not Working:</strong> Check browser audio permissions</li>
+                </ul>
+              </div>
+
+              <div className="help-contact">
+                <p style={{ margin: '16px 0 0 0', textAlign: 'center', opacity: 0.8 }}>
+                  Need more help? Check the README.md or open an issue on GitHub.
+                </p>
               </div>
             </div>
           </div>
