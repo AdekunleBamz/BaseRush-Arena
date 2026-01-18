@@ -418,6 +418,7 @@ export default function Home() {
               />
 
               {/* Stake button */}
+              {/* Stake button */}
               <button 
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px'}}
@@ -427,6 +428,7 @@ export default function Home() {
                 {isPending ? 'Requesting...' : isConfirming ? 'Confirming...' : 'Stake'}
               </button>
 
+              {/* Claim and compound buttons */}
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px'}}>
                 <button className="btn" onClick={claimRewards} disabled={isConfirming || isPending}>
                   {isPending ? 'Requesting...' : 'Claim Rewards'}
@@ -439,7 +441,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Badges Tab */}
+        {/* Badges Tab UI */}
         {activeTab === 'badges' && (
           <div>
             <h2>Achievement Badges</h2>
@@ -447,6 +449,7 @@ export default function Home() {
               Collect badges by completing milestones!
             </p>
 
+            {/* Badge list with claim buttons */}
             <div style={{display: 'grid', gap: '12px'}}>
               {Object.entries(BADGE_TYPES).map(([name, id]) => (
                 <div key={id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px'}}>
@@ -470,6 +473,7 @@ export default function Home() {
         {activeTab === 'notifications' && <Notifications />}
       </div>
 
+      {/* Transaction status messages */}
       {isConfirming && (
         <div className="card" style={{textAlign: 'center'}}>
           ⏳ Transaction confirming...
