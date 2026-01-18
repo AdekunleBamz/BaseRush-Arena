@@ -18,6 +18,7 @@ import Leaderboard from '../components/Leaderboard'
 import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
 import { Skeleton } from '../components/Skeleton'
+import ActivityLog from '../components/ActivityLog'
 import { useTheme } from '../lib/theme-context'
 import { useSound } from '../lib/sound-context'
 import Tooltip from '../components/Tooltip'
@@ -242,8 +243,18 @@ export default function Home() {
           message: 'Your transaction has been successfully confirmed on the blockchain'
         })
       }
+
+      // Add activity log entry
+      if (window.addActivity) {
+        window.addActivity({
+          type: 'win',
+          action: 'Transaction Confirmed',
+          details: 'Blockchain transaction successfully processed',
+          txHash: hash ? `${hash.slice(0, 6)}...${hash.slice(-4)}` : undefined
+        })
+      }
     }
-  }, [isConfirmed, refetchRound, refetchStake, playSound])
+  }, [isConfirmed, refetchRound, refetchStake, playSound, hash])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -908,6 +919,12 @@ export default function Home() {
           >
             🔔 Notifications
           </button>
+          <button
+            className={`btn ${activeTab === 'activity' ? 'btn-primary' : ''}`}
+            onClick={() => setActiveTab('activity')}
+          >
+            📊 Activity
+          </button>
         </div>
 
         {/* Game Tab UI */}
@@ -1075,6 +1092,9 @@ export default function Home() {
 
         {/* Notifications Tab */}
         {activeTab === 'notifications' && <Notifications />}
+
+        {/* Activity Tab */}
+        {activeTab === 'activity' && <ActivityLog />}
       </div>
 
       {/* Transaction status messages */}
