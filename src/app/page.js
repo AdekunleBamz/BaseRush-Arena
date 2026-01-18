@@ -1,9 +1,16 @@
+
+// BaseRush Arena Main Page
+// This file contains the main Home component for the dApp, handling game logic, contract interactions, and UI state.
 'use client'
 
+
+// React and external hooks
 import { useEffect, useState } from 'react'
 import { useAppKit } from '@reown/appkit/react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
+
+// App-specific imports
 import { CONTRACTS, GAME_POOL_ABI, REWARD_VAULT_ABI, ACHIEVEMENT_NFT_ABI, BADGE_TYPES } from '../lib/contracts'
 import Loading from '../components/Loading'
 import ErrorMessage from '../components/ErrorMessage'
@@ -12,26 +19,30 @@ import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
 import { useTheme } from '../lib/theme-context'
 
+// Main Home component for the dApp
 export default function Home() {
+  // External hooks
   const { open } = useAppKit()
   const { address, isConnected } = useAccount()
   const { writeContract, data: hash, error: writeError, isPending } = useWriteContract()
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
   const { isDark, toggleTheme } = useTheme()
-  
+
+  // UI state
   const [selectedOption, setSelectedOption] = useState(0)
   const [multiCount, setMultiCount] = useState(1)
   const [stakeAmount, setStakeAmount] = useState('0.0001')
   const [activeTab, setActiveTab] = useState('game')
 
-  // Read current round info
+  // Contract reads
+  // Get current round info
   const { data: roundInfo, refetch: refetchRound } = useReadContract({
     address: CONTRACTS.GAME_POOL,
     abi: GAME_POOL_ABI,
     functionName: 'getCurrentRoundInfo',
   })
 
-  // Read player stats
+  // Get player stats
   const { data: playerEntries } = useReadContract({
     address: CONTRACTS.GAME_POOL,
     abi: GAME_POOL_ABI,
@@ -46,7 +57,7 @@ export default function Home() {
     args: [address],
   })
 
-  // Read stake info
+  // Get stake info
   const { data: stakeInfo, refetch: refetchStake } = useReadContract({
     address: CONTRACTS.REWARD_VAULT,
     abi: REWARD_VAULT_ABI,
@@ -54,7 +65,7 @@ export default function Home() {
     args: [address],
   })
 
-  // Read badge count
+  // Get badge count
   const { data: badgeCount } = useReadContract({
     address: CONTRACTS.ACHIEVEMENT_NFT,
     abi: ACHIEVEMENT_NFT_ABI,
