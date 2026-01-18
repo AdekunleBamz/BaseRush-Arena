@@ -286,7 +286,9 @@ export default function Home() {
             <div className="stat-value">{playerWins?.toString() || '0'}</div>
           </div>
           <div className="stat">
-            <div className="stat-label">Badges</div>
+            <Tooltip content="Achievement badges you've earned">
+              <div className="stat-label">Badges</div>
+            </Tooltip>
             <div className="stat-value">{badgeCount?.toString() || '0'}</div>
           </div>
           <div className="stat">
