@@ -41,6 +41,19 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false)
   const [animationsEnabled, setAnimationsEnabled] = useState(true)
   const [compactMode, setCompactMode] = useState(false)
+  const [showChart, setShowChart] = useState(false)
+
+  // Mock data for demonstration - in a real app this would come from contract events
+  const gameHistory = [
+    { round: 1, result: 'win', amount: 0.001 },
+    { round: 2, result: 'loss', amount: -0.0001 },
+    { round: 3, result: 'win', amount: 0.001 },
+    { round: 4, result: 'win', amount: 0.001 },
+    { round: 5, result: 'loss', amount: -0.0001 },
+    { round: 6, result: 'win', amount: 0.001 },
+    { round: 7, result: 'win', amount: 0.001 },
+    { round: 8, result: 'loss', amount: -0.0001 },
+  ]
 
   // Keyboard navigation
   useEffect(() => {
@@ -580,8 +593,88 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+          <button
+            className="btn"
+            onClick={() => setShowChart(!showChart)}
+            style={{ fontSize: '14px', padding: '6px 12px' }}
+            aria-expanded={showChart}
+            aria-controls="performance-chart"
+          >
+            {showChart ? '📊 Hide Performance Chart' : '📈 Show Performance Chart'}
+          </button>
+        </div>
       </section>
 
+      {/* Performance Chart */}
+      {showChart && (
+        <section className="card" aria-labelledby="chart-heading">
+          <h3 id="chart-heading" style={{ marginBottom: '16px', color: '#fff' }}>
+            Recent Game Performance
+          </h3>
+          <div className="chart-container">
+            <svg
+              width="100%"
+              height="200"
+              viewBox="0 0 400 200"
+              role="img"
+              aria-labelledby="chart-heading"
+            >
+              <title>Game results over the last 8 rounds</title>
+              {gameHistory.map((game, index) => {
+                const x = (index / (gameHistory.length - 1)) * 350 + 25
+                const height = Math.abs(game.amount) * 10000 // Scale for visibility
+                const y = game.result === 'win' ? 150 - height : 150
+                const color = game.result === 'win' ? '#4CAF50' : '#f44336'
+
+                return (
+                  <rect
+                    key={index}
+                    x={x}
+                    y={y}
+                    width="20"
+                    height={height}
+                    fill={color}
+                    rx="2"
+                  >
+                    <title>Round {game.round}: {game.result} ({game.amount} ETH)</title>
+                  </rect>
+                )
+              })}
+              {/* X-axis labels */}
+              <text x="25" y="180" fill="#fff" fontSize="12">Round 1</text>
+              <text x="200" y="180" fill="#fff" fontSize="12">Round {Math.floor(gameHistory.length / 2)}</text>
+              <text x="375" y="180" fill="#fff" fontSize="12">Round {gameHistory.length}</text>
+
+              {/* Legend */}
+              <rect x="25" y="10" width="12" height="12" fill="#4CAF50" />
+              <text x="42" y="20" fill="#fff" fontSize="12">Wins</text>
+              <rect x="100" y="10" width="12" height="12" fill="#f44336" />
+              <text x="117" y="20" fill="#fff" fontSize="12">Losses</text>
+            </svg>
+          </div>
+          <div className="chart-stats" style={{ display: 'flex', justifyContent: 'space-around', marginTop: '16px' }}>
+            <div className="chart-stat">
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4CAF50' }}>
+                {gameHistory.filter(g => g.result === 'win').length}
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>Wins</div>
+            </div>
+            <div className="chart-stat">
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#f44336' }}>
+                {gameHistory.filter(g => g.result === 'loss').length}
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>Losses</div>
+            </div>
+            <div className="chart-stat">
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#2196F3' }}>
+                {(gameHistory.reduce((sum, g) => sum + g.amount, 0) * 1000).toFixed(1)} ETH
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>Net Profit</div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Tab Navigation for Game, Stake, Badges */}
       <div className="card">
