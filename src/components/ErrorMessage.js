@@ -1,3 +1,5 @@
+// ErrorMessage Component
+// Displays error messages with optional retry functionality.
 export default function ErrorMessage({ error, onRetry }) {
   return (
     <div style={{
@@ -12,6 +14,7 @@ export default function ErrorMessage({ error, onRetry }) {
       <p style={{ marginBottom: '20px', opacity: 0.9 }}>
         {error?.message || 'Something went wrong. Please try again.'}
       </p>
+      {/* Optional retry button */}
       {onRetry && (
         <button
           onClick={onRetry}
