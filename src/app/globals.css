@@ -747,3 +747,47 @@ input::placeholder {
   font-weight: 600;
   color: #4CAF50;
 }
+
+/* Quick Start Guide */
+.quick-start {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.quick-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #2196F3;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #2196F3;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-content strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #2196F3;
+}
+
+.step-content p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}

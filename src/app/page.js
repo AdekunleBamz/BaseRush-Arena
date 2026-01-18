@@ -763,13 +763,37 @@ export default function Home() {
               </div>
 
               <div className="help-section">
-                <h4>💰 Staking & Rewards</h4>
-                <ul className="help-list">
-                  <li><strong>Staking:</strong> Deposit ETH to earn rewards over time</li>
-                  <li><strong>Claim Rewards:</strong> Withdraw earned staking rewards</li>
-                  <li><strong>Compounding:</strong> Reinvest rewards to earn more</li>
-                  <li><strong>APY:</strong> Variable rates based on total staked amount</li>
-                </ul>
+                <h4>� Quick Start Guide</h4>
+                <div className="quick-start">
+                  <div className="quick-step">
+                    <span className="step-number">1</span>
+                    <div className="step-content">
+                      <strong>Connect Wallet</strong>
+                      <p>Click the wallet button in the top-right corner</p>
+                    </div>
+                  </div>
+                  <div className="quick-step">
+                    <span className="step-number">2</span>
+                    <div className="step-content">
+                      <strong>Switch to Base Network</strong>
+                      <p>Ensure your wallet is on the Base network</p>
+                    </div>
+                  </div>
+                  <div className="quick-step">
+                    <span className="step-number">3</span>
+                    <div className="step-content">
+                      <strong>Fund Your Wallet</strong>
+                      <p>Get some ETH on Base from an exchange or bridge</p>
+                    </div>
+                  </div>
+                  <div className="quick-step">
+                    <span className="step-number">4</span>
+                    <div className="step-content">
+                      <strong>Start Playing</strong>
+                      <p>Choose 0, 1, or 2 and enter the game!</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="help-section">
