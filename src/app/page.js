@@ -620,24 +620,85 @@ export default function Home() {
               </div>
 
               <div className="setting-group">
-                <h4>Keyboard Shortcuts</h4>
-                <div className="shortcut-list">
-                  <div className="shortcut-item">
-                    <kbd>1-3</kbd> <span>Select prediction option</span>
-                  </div>
-                  <div className="shortcut-item">
-                    <kbd>Ctrl/Cmd + Enter</kbd> <span>Enter game</span>
-                  </div>
-                  <div className="shortcut-item">
-                    <kbd>T</kbd> <span>Toggle theme</span>
-                  </div>
-                  <div className="shortcut-item">
-                    <kbd>S</kbd> <span>Toggle sound</span>
-                  </div>
-                  <div className="shortcut-item">
-                    <kbd>← →</kbd> <span>Switch tabs</span>
-                  </div>
+                <h4>Data Management</h4>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      const settings = {
+                        theme: isDark ? 'dark' : 'light',
+                        soundEnabled: isSoundEnabled,
+                        animationsEnabled,
+                        compactMode
+                      }
+                      const dataStr = JSON.stringify(settings, null, 2)
+                      const dataBlob = new Blob([dataStr], { type: 'application/json' })
+                      const url = URL.createObjectURL(dataBlob)
+                      const link = document.createElement('a')
+                      link.href = url
+                      link.download = 'baserush-settings.json'
+                      document.body.appendChild(link)
+                      link.click()
+                      document.body.removeChild(link)
+                      URL.revokeObjectURL(url)
+                    }}
+                  >
+                    📥 Export Settings
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      const input = document.createElement('input')
+                      input.type = 'file'
+                      input.accept = '.json'
+                      input.onchange = (e) => {
+                        const file = e.target.files[0]
+                        if (file) {
+                          const reader = new FileReader()
+                          reader.onload = (e) => {
+                            try {
+                              const settings = JSON.parse(e.target.result)
+                              if (settings.theme) {
+                                setIsDark(settings.theme === 'dark')
+                              }
+                              if (typeof settings.soundEnabled === 'boolean') {
+                                setIsSoundEnabled(settings.soundEnabled)
+                              }
+                              if (typeof settings.animationsEnabled === 'boolean') {
+                                setAnimationsEnabled(settings.animationsEnabled)
+                              }
+                              if (typeof settings.compactMode === 'boolean') {
+                                setCompactMode(settings.compactMode)
+                              }
+                              if (window.addNotification) {
+                                window.addNotification({
+                                  type: 'win',
+                                  title: 'Settings Imported',
+                                  message: 'Your settings have been successfully imported'
+                                })
+                              }
+                            } catch (error) {
+                              if (window.addNotification) {
+                                window.addNotification({
+                                  type: 'stake',
+                                  title: 'Import Failed',
+                                  message: 'Invalid settings file format'
+                                })
+                              }
+                            }
+                          }
+                          reader.readAsText(file)
+                        }
+                      }
+                      input.click()
+                    }}
+                  >
+                    📤 Import Settings
+                  </button>
                 </div>
+                <p style={{ fontSize: '12px', opacity: 0.7, margin: '8px 0 0 0' }}>
+                  Export your settings to backup or share. Import to restore from a backup file.
+                </p>
               </div>
             </div>
           </div>
