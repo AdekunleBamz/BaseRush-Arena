@@ -19,6 +19,7 @@ import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
 import { useTheme } from '../lib/theme-context'
 import { useSound } from '../lib/sound-context'
+import Tooltip from '../components/Tooltip'
 
 // Main Home component for the dApp
 export default function Home() {
@@ -273,7 +274,9 @@ export default function Home() {
       <div className="card">
         <div className="grid">
           <div className="stat">
-            <div className="stat-label">Total Entries</div>
+            <Tooltip content="Total number of game entries you've made">
+              <div className="stat-label">Total Entries</div>
+            </Tooltip>
             <div className="stat-value">{playerEntries?.toString() || '0'}</div>
           </div>
           <div className="stat">
