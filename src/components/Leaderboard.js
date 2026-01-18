@@ -75,7 +75,19 @@ export default function Leaderboard() {
 
   return (
     <div className="card">
-      <h2>🏆 Leaderboard</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <h2>🏆 Leaderboard</h2>
+        <button 
+          className="btn" 
+          onClick={() => {
+            setLoading(true)
+            setTimeout(() => setLoading(false), 1000) // Simulate refresh
+          }}
+          style={{ fontSize: '14px', padding: '6px 12px' }}
+        >
+          🔄 Refresh
+        </button>
+      </div>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
