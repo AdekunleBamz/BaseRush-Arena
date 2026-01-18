@@ -18,6 +18,7 @@ import Leaderboard from '../components/Leaderboard'
 import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
 import { useTheme } from '../lib/theme-context'
+import { useSound } from '../lib/sound-context'
 
 // Main Home component for the dApp
 export default function Home() {
@@ -27,6 +28,7 @@ export default function Home() {
   const { writeContract, data: hash, error: writeError, isPending } = useWriteContract()
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash })
   const { isDark, toggleTheme } = useTheme()
+  const { isSoundEnabled, toggleSound, playSound } = useSound()
 
   // UI state
   const [selectedOption, setSelectedOption] = useState(0)
@@ -77,8 +79,9 @@ export default function Home() {
     if (isConfirmed) {
       refetchRound()
       refetchStake()
+      playSound('win') // Play success sound
     }
-  }, [isConfirmed])
+  }, [isConfirmed, refetchRound, refetchStake, playSound])
 
 
   /**
@@ -114,18 +117,20 @@ export default function Home() {
   useEffect(() => {
     if (writeError) {
       console.error('Write contract error:', writeError)
+      playSound('error') // Play error sound
       // Don't show alert for user rejection
       if (!writeError.message?.includes('User rejected') && writeError.code !== 4001) {
         alert(`Transaction failed: ${writeError.message || 'Unknown error'}`)
       }
     }
-  }, [writeError])
+  }, [writeError, playSound])
 
 
   /**
    * Enter the game with selected option
    */
   const enterGame = () => {
+    playSound('click') // Play click sound
     handleTransaction(() => 
       writeContract({
         address: CONTRACTS.GAME_POOL,
@@ -237,7 +242,7 @@ export default function Home() {
   return (
     <div className="container">
 
-      {/* Header with logo, theme toggle, and wallet address */}
+      {/* Header with logo, theme toggle, sound toggle, and wallet address */}
       <div className="header">
         <div className="logo">⚡ BaseRush Arena</div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -248,6 +253,14 @@ export default function Home() {
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? '☀️' : '🌙'}
+          </button>
+          <button
+            className="btn"
+            onClick={toggleSound}
+            style={{ fontSize: '18px', padding: '8px 12px' }}
+            title={isSoundEnabled ? 'Disable sound' : 'Enable sound'}
+          >
+            {isSoundEnabled ? '🔊' : '🔇'}
           </button>
           <button className="btn" onClick={() => open()}>
             {address?.slice(0, 6)}...{address?.slice(-4)}
