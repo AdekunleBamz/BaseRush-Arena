@@ -1256,6 +1256,42 @@ export default function Home() {
         </div>
       )}
       </main>
+
+      {/* Footer */}
+      <footer className="footer" role="contentinfo">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h4>BaseRush Arena v2.0.0</h4>
+            <p>A decentralized gaming dApp on Base Network</p>
+          </div>
+          <div className="footer-section">
+            <h4>Links</h4>
+            <div className="footer-links">
+              <a href="https://github.com/AdekunleBamz/BaseRush-Arena" target="_blank" rel="noopener noreferrer">
+                📖 GitHub
+              </a>
+              <a href="https://docs.base.org" target="_blank" rel="noopener noreferrer">
+                📚 Base Docs
+              </a>
+              <a href="https://reown.com/appkit" target="_blank" rel="noopener noreferrer">
+                🔗 Reown AppKit
+              </a>
+            </div>
+          </div>
+          <div className="footer-section">
+            <h4>Built with</h4>
+            <div className="tech-stack">
+              <span>⚛️ Next.js</span>
+              <span>🎨 CSS</span>
+              <span>🌐 Web3</span>
+              <span>⚡ Base</span>
+            </div>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>&copy; 2026 BaseRush Arena. Built for the decentralized future.</p>
+        </div>
+      </footer>
     </div>
   )
 }
