@@ -5,7 +5,7 @@
 
 
 // React and external hooks
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useAppKit } from '@reown/appkit/react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
@@ -41,21 +41,21 @@ export default function Home() {
 
   // Contract reads
   // Get current round info
-  const { data: roundInfo, refetch: refetchRound } = useReadContract({
+  const { data: roundInfo, refetch: refetchRound, isLoading: roundLoading } = useReadContract({
     address: CONTRACTS.GAME_POOL,
     abi: GAME_POOL_ABI,
     functionName: 'getCurrentRoundInfo',
   })
 
   // Get player stats
-  const { data: playerEntries } = useReadContract({
+  const { data: playerEntries, isLoading: entriesLoading } = useReadContract({
     address: CONTRACTS.GAME_POOL,
     abi: GAME_POOL_ABI,
     functionName: 'playerTotalEntries',
     args: [address],
   })
 
-  const { data: playerWins } = useReadContract({
+  const { data: playerWins, isLoading: winsLoading } = useReadContract({
     address: CONTRACTS.GAME_POOL,
     abi: GAME_POOL_ABI,
     functionName: 'playerWins',
@@ -63,7 +63,7 @@ export default function Home() {
   })
 
   // Get stake info
-  const { data: stakeInfo, refetch: refetchStake } = useReadContract({
+  const { data: stakeInfo, refetch: refetchStake, isLoading: stakeLoading } = useReadContract({
     address: CONTRACTS.REWARD_VAULT,
     abi: REWARD_VAULT_ABI,
     functionName: 'getStakeInfo',
@@ -71,12 +71,32 @@ export default function Home() {
   })
 
   // Get badge count
-  const { data: badgeCount } = useReadContract({
+  const { data: badgeCount, isLoading: badgeLoading } = useReadContract({
     address: CONTRACTS.ACHIEVEMENT_NFT,
     abi: ACHIEVEMENT_NFT_ABI,
     functionName: 'getUserBadgeCount',
     args: [address],
   })
+
+  // Memoized calculations for performance
+  const totalStaked = useMemo(() => {
+    if (!stakeInfo) return '0'
+    return formatEther(stakeInfo[0] || 0n)
+  }, [stakeInfo])
+
+  const pendingRewards = useMemo(() => {
+    if (!stakeInfo) return '0'
+    return formatEther(stakeInfo[1] || 0n)
+  }, [stakeInfo])
+
+  const winRate = useMemo(() => {
+    const entries = Number(playerEntries || 0)
+    const wins = Number(playerWins || 0)
+    if (entries === 0) return '0%'
+    return ((wins / entries) * 100).toFixed(1) + '%'
+  }, [playerEntries, playerWins])
+
+  const isLoadingStats = entriesLoading || winsLoading || stakeLoading || badgeLoading
 
   useEffect(() => {
     if (isConfirmed) {
@@ -92,7 +112,7 @@ export default function Home() {
    * @param {Function} txFn - Transaction function to execute
    * @param {string} actionName - Name of the action for error messages
    */
-  const handleTransaction = (txFn, actionName = 'transaction') => {
+  const handleTransaction = useCallback((txFn, actionName = 'transaction') => {
     // Ensure wallet is connected
     if (!isConnected) {
       setErrorMessage('Please connect your wallet to continue')
@@ -133,7 +153,7 @@ export default function Home() {
       setShowError(true)
       playSound('error')
     }
-  }
+  }, [isConnected, playSound, setErrorMessage, setShowError])
 
   // Show write errors
   useEffect(() => {
@@ -165,7 +185,7 @@ export default function Home() {
   /**
    * Enter the game with selected option
    */
-  const enterGame = () => {
+  const enterGame = useCallback(() => {
     playSound('click') // Play click sound
     handleTransaction(() =>
       writeContract({
@@ -177,7 +197,7 @@ export default function Home() {
       }),
       'enter game'
     )
-  }
+  }, [playSound, handleTransaction, writeContract, selectedOption])
 
 
   /**
@@ -335,26 +355,48 @@ export default function Home() {
             <Tooltip content="Total number of game entries you've made">
               <div className="stat-label">Total Entries</div>
             </Tooltip>
-            <div className="stat-value">{playerEntries?.toString() || '0'}</div>
+            <div className="stat-value">
+              {isLoadingStats ? <Loading /> : (playerEntries?.toString() || '0')}
+            </div>
           </div>
           <div className="stat">
             <Tooltip content="Number of rounds you've won">
               <div className="stat-label">Wins</div>
             </Tooltip>
-            <div className="stat-value">{playerWins?.toString() || '0'}</div>
+            <div className="stat-value">
+              {isLoadingStats ? <Loading /> : (playerWins?.toString() || '0')}
+            </div>
+          </div>
+          <div className="stat">
+            <Tooltip content="Your win rate percentage">
+              <div className="stat-label">Win Rate</div>
+            </Tooltip>
+            <div className="stat-value">
+              {isLoadingStats ? <Loading /> : winRate}
+            </div>
           </div>
           <div className="stat">
             <Tooltip content="Achievement badges you've earned">
               <div className="stat-label">Badges</div>
             </Tooltip>
-            <div className="stat-value">{badgeCount?.toString() || '0'}</div>
+            <div className="stat-value">
+              {isLoadingStats ? <Loading /> : (badgeCount?.toString() || '0')}
+            </div>
           </div>
           <div className="stat">
             <Tooltip content="ETH amount staked in the reward vault">
               <div className="stat-label">Staked</div>
             </Tooltip>
             <div className="stat-value">
-              {stakeInfo ? formatEther(stakeInfo[0]).slice(0, 6) : '0'} ETH
+              {isLoadingStats ? <Loading /> : `${totalStaked.slice(0, 6)} ETH`}
+            </div>
+          </div>
+          <div className="stat">
+            <Tooltip content="Pending rewards available to claim">
+              <div className="stat-label">Pending Rewards</div>
+            </Tooltip>
+            <div className="stat-value">
+              {isLoadingStats ? <Loading /> : `${pendingRewards.slice(0, 6)} ETH`}
             </div>
           </div>
         </div>
