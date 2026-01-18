@@ -1,7 +1,11 @@
 {
   "name": "baserush-arena",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
+  "description": "A feature-rich Web3 prediction game dApp on Base Network with achievements, analytics, and modern UX",
+  "keywords": ["web3", "dapp", "prediction", "game", "base", "ethereum", "nextjs", "react"],
+  "author": "BaseRush Arena Team",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,8 +13,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
-    "clean": "rm -rf .next out",
-    "type-check": "tsc --noEmit"
+    "format:check": "prettier --check .",
+    "clean": "rm -rf .next out node_modules/.cache",
+    "type-check": "tsc --noEmit",
+    "analyze": "ANALYZE=true next build",
+    "export": "next export",
+    "serve": "npx serve out",
+    "test": "echo \"No tests specified yet\"",
+    "prepare": "husky install || true"
   },
   "dependencies": {
     "@reown/appkit": "^1.5.0",
@@ -24,5 +34,13 @@
   },
   "optionalDependencies": {
     "porto": "*"
-  }
-}
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    ">0.3%",
+    "not ie 11",
+    "not dead"
+  ]
