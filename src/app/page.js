@@ -17,6 +17,7 @@ import ErrorMessage from '../components/ErrorMessage'
 import Leaderboard from '../components/Leaderboard'
 import Chat from '../components/Chat'
 import Notifications from '../components/Notifications'
+import { Skeleton } from '../components/Skeleton'
 import { useTheme } from '../lib/theme-context'
 import { useSound } from '../lib/sound-context'
 import Tooltip from '../components/Tooltip'
@@ -689,7 +690,7 @@ export default function Home() {
               <div className="stat-label">Total Entries</div>
             </Tooltip>
             <div className="stat-value" aria-label={`Total entries: ${isLoadingStats ? 'Loading' : (playerEntries?.toString() || '0')}`}>
-              {isLoadingStats ? <Loading /> : (playerEntries?.toString() || '0')}
+              {isLoadingStats ? <Skeleton width="40px" height="20px" /> : (playerEntries?.toString() || '0')}
             </div>
           </div>
           <div className="stat" role="listitem">
@@ -697,7 +698,7 @@ export default function Home() {
               <div className="stat-label">Wins</div>
             </Tooltip>
             <div className="stat-value" aria-label={`Wins: ${isLoadingStats ? 'Loading' : (playerWins?.toString() || '0')}`}>
-              {isLoadingStats ? <Loading /> : (playerWins?.toString() || '0')}
+              {isLoadingStats ? <Skeleton width="30px" height="20px" /> : (playerWins?.toString() || '0')}
             </div>
           </div>
           <div className="stat">
@@ -705,7 +706,7 @@ export default function Home() {
               <div className="stat-label">Win Rate</div>
             </Tooltip>
             <div className="stat-value">
-              {isLoadingStats ? <Loading /> : winRate}
+              {isLoadingStats ? <Skeleton width="50px" height="20px" /> : winRate}
             </div>
           </div>
           <div className="stat">
@@ -713,7 +714,7 @@ export default function Home() {
               <div className="stat-label">Badges</div>
             </Tooltip>
             <div className="stat-value">
-              {isLoadingStats ? <Loading /> : (badgeCount?.toString() || '0')}
+              {isLoadingStats ? <Skeleton width="25px" height="20px" /> : (badgeCount?.toString() || '0')}
             </div>
           </div>
           <div className="stat">
@@ -729,7 +730,7 @@ export default function Home() {
               <div className="stat-label">Pending Rewards</div>
             </Tooltip>
             <div className="stat-value">
-              {isLoadingStats ? <Loading /> : `${pendingRewards.slice(0, 6)} ETH`}
+              {isLoadingStats ? <Skeleton width="60px" height="20px" /> : `${pendingRewards.slice(0, 6)} ETH`}
             </div>
           </div>
           <div className="stat">
