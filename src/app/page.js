@@ -826,6 +826,25 @@ export default function Home() {
                 </ul>
               </div>
 
+              <div className="help-section">
+                <h4>📋 What's New (v2.0.0)</h4>
+                <div className="changelog">
+                  <div className="changelog-item">
+                    <span className="changelog-date">Latest</span>
+                    <ul>
+                      <li>🎨 Complete UI/UX overhaul with modern design</li>
+                      <li>🌙 Dark/Light theme support with persistence</li>
+                      <li>🔊 Sound effects system with Web Audio API</li>
+                      <li>♿ Full accessibility support (ARIA, keyboard nav)</li>
+                      <li>📊 Performance charts and data visualization</li>
+                      <li>🏆 Gamification with achievements and streaks</li>
+                      <li>⚙️ Advanced settings panel with export/import</li>
+                      <li>📱 Responsive design for all devices</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               <div className="help-contact">
                 <p style={{ margin: '16px 0 0 0', textAlign: 'center', opacity: 0.8 }}>
                   Need more help? Check the README.md or open an issue on GitHub.
