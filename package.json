@@ -1,6 +1,7 @@
 {
   "name": "baserush-arena",
   "version": "2.0.0",
+  "type": "module",
   "private": true,
   "description": "A feature-rich Web3 prediction game dApp on Base Network with achievements, analytics, and modern UX",
   "keywords": [
@@ -19,8 +20,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rm -rf .next out node_modules/.cache",
@@ -54,6 +55,8 @@
     "not dead"
   ],
   "devDependencies": {
-    "eslint": "^9.39.2"
+    "@eslint/eslintrc": "^3.3.3",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.3"
   }
 }
