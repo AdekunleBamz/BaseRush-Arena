@@ -17,17 +17,19 @@ export default function Notifications() {
       type: 'win',
       title: 'Round Won!',
       message: 'Congratulations! You won round #123',
-      timestamp: Date.now() - 60000
+      timestamp: Date.now() - 60000,
+      read: false
     },
     {
       id: 2,
       type: 'prize',
       title: 'Prize Claimed',
       message: 'You claimed 0.045 ETH from round #122',
-      timestamp: Date.now() - 120000
+      timestamp: Date.now() - 120000,
+      read: true
     }
   ])
-  const [filterType, setFilterType] = useState('all') // all, win, prize, entry, stake
+  const [filterType, setFilterType] = useState('all') // all, unread, win, prize, entry, stake
 
   const addNotification = (notification) => {
     const newNotification = {
@@ -40,6 +42,10 @@ export default function Notifications() {
 
   const removeNotification = (id) => {
     setNotifications(prev => prev.filter(n => n.id !== id))
+  }
+
+  const markAsRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
   }
 
   const formatTime = (timestamp) => {
@@ -77,6 +83,8 @@ export default function Notifications() {
   // Get filtered notifications
   const filteredNotifications = filterType === 'all' 
     ? notifications 
+    : filterType === 'unread'
+    ? notifications.filter(n => !n.read)
     : notifications.filter(n => n.type === filterType)
 
   // Expose addNotification for parent components
@@ -93,7 +101,7 @@ export default function Notifications() {
       
       {/* Filter buttons */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-        {['all', 'win', 'prize', 'entry', 'stake'].map(type => (
+        {['all', 'unread', 'win', 'prize', 'entry', 'stake'].map(type => (
           <button
             key={type}
             className={`btn ${filterType === type ? 'btn-primary' : ''}`}
@@ -172,6 +180,24 @@ export default function Notifications() {
               >
                 ×
               </button>
+              {!notification.read && (
+                <button
+                  onClick={() => markAsRead(notification.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    opacity: 0.6
+                  }}
+                  onMouseOver={(e) => e.target.style.opacity = '1'}
+                  onMouseOut={(e) => e.target.style.opacity = '0.6'}
+                  title="Mark as read"
+                >
+                  ✓
+                </button>
+              )}
             </div>
           ))}
         </div>
